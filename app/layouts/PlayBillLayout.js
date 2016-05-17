@@ -29,6 +29,7 @@ const propTypes = {
 	onVideoSelected: PropTypes.func,
 	style: ViewStylePropType,
   	programId: PropTypes.string,
+	videoPath: PropTypes.string,
  	playBill: PropTypes.array,
 };
 
@@ -62,6 +63,15 @@ function formatBillDate(index, playDay) {
     }
 }
 
+function findPlaybackTime(videoPath) {
+	var playback = [];
+    var index = videoPath.indexOf('playbackbegin');
+	playback.push(videoPath.substring(index + 14, index + 14 + 14));
+	index = videoPath.indexOf('playbackend');
+	playback.push(videoPath.substring(index + 12, index + 12 + 14));
+	return playback;
+}
+
 //直播节目布局
 class PlayBillLayout extends React.Component {
 	constructor(props) {
@@ -76,7 +86,7 @@ class PlayBillLayout extends React.Component {
 	shouldComponentUpdate(nextProps, nextState) {
     	//console.log('PlayBillLayout shouldComponentUpdate');
 		if (this.props.programId == nextProps.programId && 
-        	this.state.dayIndex == nextState.dayIndex) {
+			this.props.videoPath == nextProps.videoPath && this.state.dayIndex == nextState.dayIndex) {
 			  return false;
 		}
 		return true;
@@ -88,7 +98,8 @@ class PlayBillLayout extends React.Component {
   	}
  	
   	renderContent(tab) {
-		var playBill = this.props.playBill;  //节目单数组
+		var playBill = this.props.playBill;  	//节目单数组
+		var videoPath = this.props.videoPath;   //当前播放的视频链接
 		if (tab == '节目单' && playBill != undefined) {
 		var todayIndex;
 		for (var i = playBill.length - 1; i >= 0; i--) {
@@ -121,22 +132,32 @@ class PlayBillLayout extends React.Component {
 		var playLists = playBill[billIndex].PlayLists.Play;
 		var playLength = playLists.length;
 		var currentTime = new Date();
-		var state = 0;
+		var highLight = false;
 		var stateText = '';
+		
+		var playback;
+		if (videoPath.indexOf('playback') > 0) {
+			playback = findPlaybackTime(videoPath);
+		}
+	    
 		for (var i = 0; i < playLength; i++) {
 			var play = playLists[i];
 		  	var startTime = new Date(Date.parse((play.StartTime + ':00').replace(/\-/g,'/')));
 			var endTime = new Date(Date.parse((play.EndTime + ':00').replace(/\-/g,'/')));
 			
-			if (currentTime < startTime) { 										//预约
-				state = 2; 									
+			if (currentTime < startTime) { 										//预约								
  				stateText = '预约';
 			} else if(currentTime >= startTime && currentTime <= endTime) {	    //正在播放
-				state = 1;
+				highLight = true;
 				stateText = '播放中';
 			} else {															//回看
-				state = 0;
 				stateText = '回看';
+			}
+			
+			//点击回看视频，高亮显示
+			if (playback != undefined && playback[0] == startTime.format('yyyyMMddhhmmss')
+				&& playback[1] == endTime.format('yyyyMMddhhmmss')) {
+				highLight = true;
 			}
 			
 			billListView.push(
@@ -144,8 +165,8 @@ class PlayBillLayout extends React.Component {
 					height:64, borderBottomWidth: 0.5, borderBottomColor:'#f0f0f0'}}
 					onPress={this.props.onBillItemClicked.bind(this, startTime, endTime)}>
 					<View style={{flex: 6, flexDirection:'column', justifyContent:'center'}}>
-						<Text style={{fontSize:12, color:(state == 1 ? '#ff8f00':'#3c3c3c')}}>{play.PlayName}</Text>
-						<Text style={{fontSize:10, color:(state == 1 ? '#ff8f00':'#adadad'), marginTop: 2}}>{play.StartTime.substring(11)}</Text>
+						<Text style={{fontSize:12, color:(highLight ? '#ff8f00':'#3c3c3c')}}>{play.PlayName}</Text>
+						<Text style={{fontSize:10, color:(highLight ? '#ff8f00':'#adadad'), marginTop: 2}}>{play.StartTime.substring(11)}</Text>
 					</View>
 					<View style={{flex: 1, flexDirection:'column', justifyContent:'center', alignItems:'flex-start'}}>
 						<Text style={{fontSize:10, color:'#ff8f00'}}>{stateText}</Text>

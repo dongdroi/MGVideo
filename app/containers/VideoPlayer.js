@@ -328,7 +328,7 @@ class VideoPlayer extends Component {
        if (detail.playBill.Playbill != undefined) {
          serialLists.push(
            <PlayBillLayout key={0} playBill={detail.playBill.Playbill} programId={programId}
-              onBillItemClicked={this.onBillItemClicked}/>
+              videoPath={detail.videoPath} onBillItemClicked={this.onBillItemClicked}/>
          );
        }
     } else {

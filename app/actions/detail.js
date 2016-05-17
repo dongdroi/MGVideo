@@ -124,19 +124,16 @@ export function fetchPlayBill(contentId) {
 }
 
 export function fetchVideoPath(visitPath, contentId, startTime, endTime) {
-	const timestamp = new Date().format('yyyyMMddhhmmss');
- 	var params = 'visitPath=' + visitPath + '&msisdn=3000000000000' 
-	 	+ '&contentID=' + contentId + '&timestamp=' + timestamp + '&otherPara=$playbackbegin='
-		+ startTime + '$playbackend=' + endTime;
-    console.log('timestamp = ' + timestamp + ',params = ' + params);
+	var timestamp = new Date().format('yyyyMMddhhmmss');
+ 	var params = 'visitPath=' + visitPath + '&msisdn=3000000000000' + '&contentID=' + contentId 
+	 	+ '&timestamp=' + timestamp;
+    if (startTime != undefined && endTime != undefined) {
+		params = params + '&otherPara=$playbackbegin=' + startTime + '$playbackend=' + endTime;
+	}
 	return dispatch => {
 		return request(GET_PLAYURLPATH_SERVLET, 'POST', params)
 			.then((response) => {
 				//console.log('fetchVideoPath response = ' + response);
-				for (var key in response) {
-					console.log('key = ' + key + ',value = ' + response[key])
-				}
-				
 				dispatch(receiveVideoPath(response.playUrl));
 			})
 			.catch((error) => {

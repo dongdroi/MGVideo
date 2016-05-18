@@ -45,3 +45,5 @@ node_modules/react-timer-mixin
 node_modules/redux
 node_modules/redux-thunk
 npm-debug.log
+
+iOS/MGMediaFramework.framework

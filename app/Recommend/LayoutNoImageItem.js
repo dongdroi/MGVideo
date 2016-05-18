@@ -48,6 +48,7 @@ var Style 	= React.StyleSheet.create (
 	{
 		width:commonTools.myActualWidth(30),
 		height:commonTools.myActualWidth(30),
+		marginLeft: 8,
 	},
 });
 

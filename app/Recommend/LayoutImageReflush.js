@@ -71,9 +71,10 @@ var Style 	= React.StyleSheet.create (
 	{
 		flexDirection: 'row',
 		width:commonTools.screenWidth,
-		height:commonTools.myActualHeight(50),
+		//height:commonTools.myActualHeight(50),
       	justifyContent: 'center',
       	alignItems: 'center',
+		marginTop: 8,
 		backgroundColor:commonColor.bottomView,
 	},
 	//底部的按钮
@@ -88,7 +89,7 @@ var Style 	= React.StyleSheet.create (
 	bottomButtonColor:
 	{
 		color:commonColor.bottomButtonColor, 
-		fontSize:12,
+		fontSize:14,
 	},
 	//底部的间隔
 	bottomGap:

@@ -51,7 +51,7 @@ class Main extends React.Component {
       activeTab: 0,
     };
 
-    this.onPress = this.onPress.bind(this);
+    //this.onPress = this.onPress.bind(this);
     
     NativeModules.NetworkModule.getNetworkType((type) => {
          //console.log('NetworkType = ' + type);
@@ -74,22 +74,11 @@ class Main extends React.Component {
     }
   }
   
-  onPress(item) {
-    const {navigator} = this.props;
-    InteractionManager.runAfterInteractions(() => {
-      navigator.push({
-        component: VideoContainer,
-        name: 'VideoPlayer',
-        programId: '617039191',    //616103953太阳的后裔 617039191澳门风云
-      });
-    });
-  }
-  
   render() {
     const {read, navigator} = this.props;
     return (
         <View style={styles.container}>
-          <TouchableOpacity onPress={this.onPress.bind(this, "HelloWorld")}>
+          <TouchableOpacity>
             <ReadingToolbar
               navigator={navigator}
               logo={require('./img/logo.png')}

@@ -46,7 +46,8 @@ var Style 	= React.StyleSheet.create (
 	
 	emptyView:
 	{
-		flex:1
+		flex:1,
+		marginLeft: 8,
 	},
 	infoStyle:
 	{
@@ -65,11 +66,12 @@ var Style 	= React.StyleSheet.create (
 	{
 		width:commonTools.myActualWidth (width),
 		height:commonTools.myActualHeight (height),
-		marginRight:commonTools.myActualWidth (20),
+		//marginRight:commonTools.myActualWidth (20),
+		marginLeft: 8
 	},
 	title:
 	{
-		width:commonTools.screenWidth - (commonTools.myActualWidth (width + 20 + 20)),
+		//width:commonTools.screenWidth - (commonTools.myActualWidth (width + 20 + 20)),
 		//height:commonTools.myActualWidth (30),
 		fontSize:commonTools.myActualWidth (25),
 		color:"black",
@@ -78,7 +80,7 @@ var Style 	= React.StyleSheet.create (
 	{
 		flex:1,
 		fontSize:commonTools.myActualWidth (22),
-		width:commonTools.screenWidth - (commonTools.myActualWidth (width + 20 + 20)),
+		//width:commonTools.screenWidth - (commonTools.myActualWidth (width + 20 + 20)),
 		//height:commonTools.myActualWidth (height - 30 - 25-10),
 		marginTop:commonTools.myActualWidth (5),
 		marginBottom:commonTools.myActualWidth (5),
@@ -88,15 +90,15 @@ var Style 	= React.StyleSheet.create (
 	{
 		fontSize:commonTools.myActualWidth (22),
 		color:"grey",
-		width:commonTools.screenWidth - (commonTools.myActualWidth (width + 20 + 20)),
+		//width:commonTools.screenWidth - (commonTools.myActualWidth (width + 20 + 20)),
 		//height:commonTools.myActualWidth (25),
-		marginTop: 8
 	},
 	
 	baseLine:
 	{
 		marginTop:commonTools.myActualWidth (13),
 		marginBottom:commonTools.myActualWidth (13),
+		marginLeft: 8,
 		width:commonTools.screenWidth,
 		height: 0.5,
 		backgroundColor:"#e0e0e0",

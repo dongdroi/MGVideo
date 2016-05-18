@@ -169,7 +169,8 @@ module.exports 	= React.createClass (
 		},
 		onPressMenuButtonRight:function ()
 		{
-			_ScrollableTabBar.goToPage (5);
+			//_ScrollableTabBar.goToPage (5);
+			console.log('onPressMenuButtonRight');
 		},
 		renderItem:function ()
 		{
@@ -199,7 +200,9 @@ module.exports 	= React.createClass (
 													style	= {Style.ScrollableTabBar}
 													activeTextColor = {'#FE8A02'}
 													inactiveTextColor = {'#262626'}
-													underlineColor = {'#FE8A02'}/>}
+													underlineColor = {'#FE8A02'}
+													moreIcon = {require ('../img/btn_moreMenu.png')}
+													onClickMoreBtn = {this.onPressMenuButtonRight}/>}
 						onChangeTab 	= {this.onChangeTab}
 						ref = {(tabbar)=>_ScrollableTabBar = tabbar}>
 						{child}

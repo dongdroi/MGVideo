@@ -27,7 +27,6 @@ import ReadingToolbar from '../components/ReadingToolbar';
 import MGVideo from 'react-native-mgvideo';
 import {NaviGoBack} from '../utils/CommonUtils';
 import {ToastShort} from '../utils/ToastUtils';
-import {shareToTimeline, shareToSession} from 'react-native-wechat';
 import Portal from 'react-native/Libraries/Portal/Portal.js';
 
 import ReadingTabBar from '../components/ReadingTabBar';
@@ -192,15 +191,7 @@ class VideoPlayer extends Component {
             <TouchableOpacity
               style={{flex: 1}}
               onPress={() => {
-                shareToSession({
-                  title: title,
-                  description: '分享自：咪咕视频',
-                  type: 'webpageUrl',
-                  webpageUrl: 'http://m.cmvideo.cn/wap/resource/mh/share/migushare.jsp?cid=617379229&from=singlemessage&isappinstalled=1'
-                })
-                .catch((error) => {
-                  ToastShort(error.message);
-                });
+               
             }}>
               <View style={styles.shareContent}>
                 <Image
@@ -215,15 +206,7 @@ class VideoPlayer extends Component {
             <TouchableOpacity
               style={{flex: 1}}
               onPress={() => {
-                shareToTimeline({
-                  title: title,
-                  description: '分享自：咪咕视频',
-                  type: 'webpageUrl',
-                  webpageUrl: 'http://m.cmvideo.cn/wap/resource/mh/share/migushare.jsp?cid=617379229&from=singlemessage&isappinstalled=1'
-                })
-                .catch((error) => {
-                  ToastShort(error.message);
-                });
+                
             }}>
               <View style={styles.shareContent}>
                 <Image

@@ -53,9 +53,9 @@ class Main extends React.Component {
 
     //this.onPress = this.onPress.bind(this);
     
-    NativeModules.NetworkModule.getNetworkType((type) => {
-         //console.log('NetworkType = ' + type);
-    });
+    // NativeModules.NetworkModule.getNetworkType((type) => {
+    //      //console.log('NetworkType = ' + type);
+    // });
   }
 
   componentDidMount() {

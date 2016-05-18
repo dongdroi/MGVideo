@@ -8,7 +8,6 @@ const {
 } = React;
 
 import Splash from './Splash';
-import {registerApp} from 'react-native-wechat';
 import {NaviGoBack} from '../utils/CommonUtils';
 
 var _navigator, isRemoved = false;
@@ -16,7 +15,6 @@ var _navigator, isRemoved = false;
 class App extends React.Component {
   constructor(props) {
     super(props);
-    registerApp('wxb24c445773822c79');
     this.renderScene = this.renderScene.bind(this);
     this.goBack = this.goBack.bind(this);
     BackAndroid.addEventListener('hardwareBackPress', this.goBack);

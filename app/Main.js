@@ -96,7 +96,7 @@ class Main extends React.Component {
             />
           </TouchableOpacity>
           <TabBar>
-            <TabBar.Item 
+            <TabBar.Item
               icon={require('./img/recommend_not_choose.png')}
               selectedIcon={require('./img/recommend_choose.png')}
               onPress={() => {console.log("first onPress");}}
@@ -145,46 +145,6 @@ let styles = StyleSheet.create({
   container: {
     flex: 1,
     flexDirection: 'column'
-  },
-  containerItem: {
-    flex: 1,
-    flexDirection: 'column',
-    backgroundColor: '#fcfcfc',
-    padding: 8,
-  },
-  nodeTitle: {
-    flex: 1,
-    fontSize: 14,
-    textAlign: 'left',
-    color: 'black'
-  },
-  itemImage: {
-    flex: 1,
-    backgroundColor: '#000',
-    marginTop: 8,
-    marginBottom: 4
-  },
-  itemTitle: {
-    flex: 1,
-    fontSize: 12,
-    textAlign: 'left',
-    color: 'black',
-    marginBottom: 2
-  },
-  itemDescription:{
-    flex: 1,
-    fontSize: 10,
-    textAlign: 'left',
-    color: '#bdbdbd'
-  },
-  listView: {
-    backgroundColor: '#eeeeec'
-  },
-  no_data: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingBottom: 100
   },
 })
 

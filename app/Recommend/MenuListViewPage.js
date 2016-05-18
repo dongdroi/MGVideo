@@ -46,7 +46,7 @@ var Style = React.StyleSheet.create(
     menuView: 
 	{
       width: commonTools.screenWidth,
-      height: commonTools.actualWidth (35),
+      height: commonTools.actualWidth (25),
     },
     menuButton: 
 	{

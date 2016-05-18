@@ -84,7 +84,6 @@ class PlayBillLayout extends React.Component {
 	}
     
 	shouldComponentUpdate(nextProps, nextState) {
-    	//console.log('PlayBillLayout shouldComponentUpdate');
 		if (this.props.programId == nextProps.programId && 
 			this.props.videoPath == nextProps.videoPath && this.state.dayIndex == nextState.dayIndex) {
 			  return false;
@@ -93,7 +92,6 @@ class PlayBillLayout extends React.Component {
 	}
   
   	onDateItemClicked(dayIndex) {
-    	//console.log('onItemClicked dayIndex = ' + dayIndex);
     	this.setState({dayIndex: dayIndex});
   	}
  	
@@ -145,21 +143,23 @@ class PlayBillLayout extends React.Component {
 		  	var startTime = new Date(Date.parse((play.StartTime + ':00').replace(/\-/g,'/')));
 			var endTime = new Date(Date.parse((play.EndTime + ':00').replace(/\-/g,'/')));
 			
-			if (currentTime < startTime) { 										//预约								
+			if (currentTime < startTime) {
+				highLight = false; 												//预约								
  				stateText = '预约';
-			} else if(currentTime >= startTime && currentTime <= endTime) {	    //正在播放
+			} else if(currentTime >= startTime && currentTime <= endTime) {	    //正在播放,高亮显示
 				highLight = true;
 				stateText = '播放中';
-			} else {															//回看
+			} else {
 				stateText = '回看';
+				//点击回看视频，高亮显示
+				if (playback != undefined && playback[0] == startTime.format('yyyyMMddhhmmss')
+					&& playback[1] == endTime.format('yyyyMMddhhmmss')) {
+					highLight = true;
+				} else {
+					highLight = false;
+				}
 			}
-			
-			//点击回看视频，高亮显示
-			if (playback != undefined && playback[0] == startTime.format('yyyyMMddhhmmss')
-				&& playback[1] == endTime.format('yyyyMMddhhmmss')) {
-				highLight = true;
-			}
-			
+		 	
 			billListView.push(
 				<TouchableOpacity key={i} style={{flex:1, flexDirection:'row', justifyContent:'center', 
 					height:64, borderBottomWidth: 0.5, borderBottomColor:'#f0f0f0'}}
@@ -200,7 +200,6 @@ class PlayBillLayout extends React.Component {
   	}
   
 	render() {
-		console.log('PlayBillLayout renderxxxxxxxxxxxxxxxxxxxxx' + this.props);
 		var playBillList = [];
 		playBillTabs.forEach((tab) => {
 			playBillList.push(

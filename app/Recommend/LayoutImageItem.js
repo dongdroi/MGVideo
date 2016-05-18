@@ -25,6 +25,7 @@ var Style 	= React.StyleSheet.create (
 	container: 
 	{
 		backgroundColor:'white',
+		marginTop: 8,
 		marginBottom:commonTools.myActualWidth (0),
 	},
 	nameTextAndroid:
@@ -32,26 +33,30 @@ var Style 	= React.StyleSheet.create (
 		fontSize:commonTools.myActualWidth (26),
 		color:commonColor.nameText,
 		// height:commonTools.myActualHeight (28),
+		marginTop: 2,
+		marginLeft: 8,
 	},
 	longNameTextAndroid:
 	{
 		fontSize:commonTools.myActualWidth (20),
 		color:commonColor.longNameText,
-		paddingTop:commonTools.myActualWidth (5),
+		//paddingTop:commonTools.myActualWidth (5),
 		// height:commonTools.myActualHeight (28),
+		marginTop: 4,
+		marginLeft: 8,
 	},
 	nameText:
 	{
 		fontSize:commonTools.myActualWidth (26),
 		color:commonColor.nameText,
-		height:commonTools.myActualHeight (28),
+		//height:commonTools.myActualHeight (28),
 	},
 	longNameText:
 	{
 		fontSize:commonTools.myActualWidth (20),
 		color:commonColor.longNameText,
 		paddingTop:commonTools.myActualWidth (5),
-		height:commonTools.myActualHeight (28),
+		//height:commonTools.myActualHeight (28),
 	},
 });
 

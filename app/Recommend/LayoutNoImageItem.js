@@ -29,6 +29,7 @@ var Style 	= React.StyleSheet.create (
 		flexDirection: 'row',
 		justifyContent: 'center',
 		alignItems: 'center',
+		marginTop: 4
 	},
 	nameTextAndroid:
 	{

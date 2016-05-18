@@ -20,7 +20,7 @@ import header, {
 } from '../header'
 
 var width 	= commonTools.myActualWidth (450);
-var height 	= commonTools.myActualHeight (250);
+var height 	= commonTools.myActualHeight (300);
 var Style 	= React.StyleSheet.create (
 {
 	container: 
@@ -34,14 +34,14 @@ var Style 	= React.StyleSheet.create (
 	{
 		fontSize:commonTools.myActualWidth (26),
 		color:commonColor.nameText,
-		height:commonTools.myActualHeight (28),
+		//height:commonTools.myActualHeight (28),
 	},
 	longNameText:
 	{
 		fontSize:commonTools.myActualWidth (20),
 		color:commonColor.longNameText,
 		paddingTop:commonTools.myActualWidth (5),
-		height:commonTools.myActualHeight (28),
+		//height:commonTools.myActualHeight (28),
 	},
 	
 	emptyView:
@@ -70,7 +70,7 @@ var Style 	= React.StyleSheet.create (
 	title:
 	{
 		width:commonTools.screenWidth - (commonTools.myActualWidth (width + 20 + 20)),
-		height:commonTools.myActualWidth (30),
+		//height:commonTools.myActualWidth (30),
 		fontSize:commonTools.myActualWidth (25),
 		color:"black",
 	},
@@ -79,7 +79,7 @@ var Style 	= React.StyleSheet.create (
 		flex:1,
 		fontSize:commonTools.myActualWidth (22),
 		width:commonTools.screenWidth - (commonTools.myActualWidth (width + 20 + 20)),
-		height:commonTools.myActualWidth (height - 30 - 25-10),
+		//height:commonTools.myActualWidth (height - 30 - 25-10),
 		marginTop:commonTools.myActualWidth (5),
 		marginBottom:commonTools.myActualWidth (5),
 		color:"grey",
@@ -89,7 +89,8 @@ var Style 	= React.StyleSheet.create (
 		fontSize:commonTools.myActualWidth (22),
 		color:"grey",
 		width:commonTools.screenWidth - (commonTools.myActualWidth (width + 20 + 20)),
-		height:commonTools.myActualWidth (25),
+		//height:commonTools.myActualWidth (25),
+		marginTop: 8
 	},
 	
 	baseLine:
@@ -97,8 +98,8 @@ var Style 	= React.StyleSheet.create (
 		marginTop:commonTools.myActualWidth (13),
 		marginBottom:commonTools.myActualWidth (13),
 		width:commonTools.screenWidth,
-		height:1,
-		backgroundColor:"grey",
+		height: 0.5,
+		backgroundColor:"#e0e0e0",
 	}
 });
 
@@ -166,7 +167,7 @@ module.exports 	= React.createClass (
 									
 			 			<View style 	= {Style.emptyView}>
 							<Text style 	= {Style.title}>{this.props.data.name}</Text>
-							<Text style 	= {Style.detail}>{this.props.data.myDetail}</Text>
+							<Text style 	= {Style.detail} numberOfLines={2}>{this.props.data.myDetail}</Text>
 							<Text style 	= {Style.playTime}>{playTime}</Text>
 						</View>
 									

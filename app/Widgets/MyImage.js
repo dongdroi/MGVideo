@@ -38,12 +38,9 @@ var Style = React.StyleSheet.create({
 		resizeMode: 'contain',
 	},
 	infoStyle:{
-		fontSize:12,
-		margin: 0, 
-		paddingTop:0,
-		paddingBottom:0,
-		paddingLeft:3,
-		paddingRight:3,
+		fontSize:10,
+		padding: 2,
+		textAlign: 'center',
 		backgroundColor: '#000000',
 		opacity:0.8,
 		color: 'white'
@@ -68,6 +65,7 @@ var MyImage = React.createClass (
 		render:function()
 		{
 			var info = this.props.info.length>20?(this.props.info.substr(0,20) + '...'):(this.props.info)
+			var imageWidth = this.props.width - 2 * 8;
 			return (
        			<View style		= {{
 							flex: 1, 
@@ -77,9 +75,9 @@ var MyImage = React.createClass (
 							height: this.props.height}}>
 	  		  		<Image 
 						style 	= {{
-							width: this.props.width, 
-							height: this.props.height, 
-							backgroundColor: 'transparent'}}
+							width: imageWidth,
+							height: this.props.height,
+						 	backgroundColor: 'transparent'}}
 							
 	            		source 	= {{uri: this.props.uri}}>
 							
@@ -102,7 +100,9 @@ var MyImage = React.createClass (
 									this.props.showInfo?(
 										<Text 
 											style 	= {Style.infoStyle}>
-											{info}
+											{
+												//info
+											}
 										</Text>):
 										(null)
 								}

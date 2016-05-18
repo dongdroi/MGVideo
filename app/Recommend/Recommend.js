@@ -9,6 +9,9 @@ var _MenuListViewPageItems 	= new Array();
 var MenuListViewPage 	= require('./MenuListViewPage');
 var NodeId 				= "70006350";//推荐栏目id
 var menuData 			= new Array();//标题数据源
+
+import LoadingView from '../components/LoadingView';
+
 var {
 	Text,
 	TouchableOpacity,
@@ -28,8 +31,7 @@ var Style = React.StyleSheet.create (
 	container: 
 	{
 		backgroundColor: 'white',
-		flex:1,
-		marginTop: commonTools.myActualHeight (40),    
+		flex:1, 
 	},
 	topView:
 	{
@@ -202,15 +204,6 @@ module.exports 	= React.createClass (
 						ref = {(tabbar)=>_ScrollableTabBar = tabbar}>
 						{child}
 					</ScrollableTabView>
-					<View style 	= {Style.menuButtonView}>
-					<TouchableOpacity 
-						style 	= {Style.menuButton} 
-						onPress = {this.onPressMenuButtonRight}>
-						<Image 
-							source 	= {require ('../img/btn_moreMenu.png')}>
-						</Image>
-					</TouchableOpacity>
-					</View>
 					
 				</View>
 				
@@ -238,9 +231,7 @@ module.exports 	= React.createClass (
 				else
 				{
 					return (
-						<Text style 	= {Style.container}>
-						Loading
-						</Text>
+						<LoadingView/>
 					);
 				}
 			}

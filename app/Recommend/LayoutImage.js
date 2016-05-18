@@ -56,7 +56,9 @@ var Style 	= React.StyleSheet.create (
 	titleText:
 	{
 		fontSize:commonTools.myActualWidth (26),
-		marginBottom:10,
+		marginTop: 8,
+		marginLeft: 8,
+		marginBottom: 4,
 		color:'#595968',
 	},
 	longNameText:
@@ -64,6 +66,7 @@ var Style 	= React.StyleSheet.create (
 		fontSize:commonTools.myActualWidth (20),
 		color:'#969696',
 		paddingTop:commonTools.myActualWidth (5),
+		marginLeft: 8
 	},
 	activeDot:
 	{

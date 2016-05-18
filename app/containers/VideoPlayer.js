@@ -148,13 +148,14 @@ class VideoPlayer extends Component {
   }
   
   onVideoPrepared(event) {
-     //console.log('onVideoPrepared ' + event.nativeEvent.state);
-     //this.setState({videoPrepared: true});
+     console.log('onVideoPrepared ' + event.nativeEvent.state);
+     this.setState({videoPrepared: true});
   }
   
   onVideoSelected(programId) {
-    const {dispatch, detail} = this.props;
+    this.setState({videoPrepared: false});
     
+    const {dispatch, detail} = this.props;
     InteractionManager.runAfterInteractions(() => {
         detail.videoPath = '';
         dispatch(fetchDetail(programId));
@@ -162,6 +163,8 @@ class VideoPlayer extends Component {
   }
   
   onBillItemClicked(start, end) {
+    this.setState({videoPrepared: false});
+    
 		const {dispatch, detail} = this.props;
     var contentId = detail.nodeDetail.fields.MMS_ID;
 		var visitPath = detail.nodeDetail.fields.mediafiles.mediafile[1].visitPath;
@@ -284,7 +287,7 @@ class VideoPlayer extends Component {
       programId = isNodeContent ? nodeContent._id : nodeDetail._id;
       var mainActor = '';
       const propertyList = fields.propertyFileLists.propertyFile;
-      if (propertyList.length > 0) {            //数据结构不统一
+      if (propertyList != undefined && propertyList.length > 0) {            //数据结构不统一
         propertyList.forEach((property) => {
           if (property.propertyKey == '导演') {
             videoDetail.director = property.propertyValue;
@@ -313,11 +316,13 @@ class VideoPlayer extends Component {
     var lists = [];
     if (!this.state.animPlaying && detail.videoPath != '') {
         lists.push(
-          <MGVideo key={0} style={styles.content} 
-              videoPath={detail.videoPath} 
-              stopped={this.state.stopPlay}
-              onPrepared={this.onVideoPrepared}>
-          </MGVideo>
+          <View key={0} style={styles.content}>
+            <MGVideo style={styles.content} 
+                videoPath={detail.videoPath} 
+                stopped={this.state.stopPlay}
+                onPrepared={this.onVideoPrepared}/>
+            {this.state.videoPrepared ? (null) : (<LoadingView/>)}
+          </View>
         );
     } else {
         lists.push(<View key={1} style={styles.content}/>);

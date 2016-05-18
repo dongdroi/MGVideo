@@ -35,12 +35,12 @@ const styles = StyleSheet.create (
 	menuList:
 	{
 		width: commonTools.screenWidth-commonTools.actualWidth(35),
-	  	height: commonTools.actualWidth(35),
+	  	height: commonTools.actualWidth(25),
 	  	flexDirection: 'row',
   	},
   	menucell: 
 	{
-    	height: commonTools.actualWidth(35),
+    	height: commonTools.actualWidth(25),
     	justifyContent: 'center',
     	alignItems: 'stretch',
     	overflow: 'hidden',

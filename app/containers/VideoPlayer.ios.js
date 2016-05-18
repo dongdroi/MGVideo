@@ -3,7 +3,6 @@
 import React, {
   Component,
   StyleSheet,
-  BackAndroid,
   Platform,
   Text,
   Image,
@@ -14,6 +13,12 @@ import React, {
   TouchableOpacity,
   InteractionManager,
 } from 'react-native';
+
+import header, {
+  commonStyles,
+  commonColor,
+  commonTools,
+} from '../header'
 
 import PlayBillLayout from '../layouts/PlayBillLayout';
 import VideoMenuLayout from '../layouts/VideoMenuLayout';
@@ -104,7 +109,6 @@ class VideoPlayer extends Component {
   }
     
   componentDidMount() {
-    BackAndroid.addEventListener('hardwareBackPress', this.goBack);
     
     const {dispatch} = this.props;
     
@@ -115,6 +119,8 @@ class VideoPlayer extends Component {
     setTimeout(() => {
         this.setState({animPlaying: false})
     }, 1000); 
+	
+	
   }
 
   componentWillUnmount() {
@@ -128,7 +134,6 @@ class VideoPlayer extends Component {
         dispatch(clearDetail(programId));
     }); 
      
-    BackAndroid.removeEventListener('hardwareBackPress', this.goBack);
   }
   
   goBack() {
@@ -146,7 +151,6 @@ class VideoPlayer extends Component {
   }
   
   onVideoPrepared(event) {
-     console.log('onVideoPrepared ' + event.nativeEvent.state);
      this.setState({videoPrepared: true});
   }
   
@@ -345,31 +349,21 @@ class VideoPlayer extends Component {
             }
         }
     }
-    
-    //var comments = [];
-    //if (nodeDetail.fields != undefined) {
-    //  for (var i = 0; i < 10; i++) {
-    //    comments.push({name: '用户' + i, comment: 'React native', time: '4小时之前'});
-    //  }
-    //}
-    /*
-    <ListView
-      initialListSize={1}
-      dataSource={this.state.dataSource.cloneWithRows([])}
-      renderRow={this.renderItem}
-      style={styles.listView}>
-    </ListView>        
-    */
+	
     return (
          <View style={styles.container}>
+			<View style={{marginTop:commonTools.myActualHeight(40)}}></View>
+		
             <View style={{height: VideoHeight, backgroundColor:'black'}}>
               {lists}
-              <TouchableOpacity style={styles.gotoback} onPress={this.goBack}>
+              
+			  <TouchableOpacity style={styles.gotoback} onPress={this.goBack}>
                  <Image style={{width: 24, height: 24}} 
                   source={require('../img/ic_video_back.png')}></Image>
                  <Text style={{fontSize:14, color:'white', textAlign:'left'}}>{videoName}</Text>
               </TouchableOpacity>
             </View>
+				 
             <VideoMenuLayout style={styles.shareMenu} videoMarked={this.state.videoMarked} times={'1000万次'}
                 onMarkButtonPress={this.onMarkButtonPress}
                 onShareButtonPress={this.onShareButtonPress.bind(this, videoName)} />

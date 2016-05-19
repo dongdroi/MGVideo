@@ -49,8 +49,7 @@ class App extends React.Component {
       <View style={{flex: 1}}>
         <StatusBar
          backgroundColor="#000000"
-         barStyle="default"
-       />
+         barStyle="default"/>
         <Navigator
           ref='navigator'
           style={styles.navigator}

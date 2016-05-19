@@ -120,7 +120,6 @@ class VideoPlayer extends Component {
         this.setState({animPlaying: false})
     }, 1000); 
 	
-	
   }
 
   componentWillUnmount() {
@@ -133,7 +132,8 @@ class VideoPlayer extends Component {
     InteractionManager.runAfterInteractions(() => {
         dispatch(clearDetail(programId));
     }); 
-     
+	
+	MGPlayerRCTManager.addVideoPrepared (()=>this.onVideoPrepared1);
   }
   
   goBack() {
@@ -150,6 +150,10 @@ class VideoPlayer extends Component {
     Portal.showModal(tag, this.renderShareDialog(title));
   }
   
+  onVideoPrepared1() {
+	  console.log ("111111111 onVideoPrepared");
+     this.setState({videoPrepared: true});
+  }
   onVideoPrepared(event) {
      this.setState({videoPrepared: true});
   }
@@ -303,6 +307,7 @@ class VideoPlayer extends Component {
     if (!this.state.animPlaying && detail.videoPath != '') 
 	{
 		MGPlayerRCTManager.setUri(detail.videoPath);
+		MGPlayerRCTManager.setScreen (VideoWidth, VideoHeight);
         lists.push(
           <View 
 				key 	= {0} 
@@ -313,7 +318,6 @@ class VideoPlayer extends Component {
                 stopped 	= {this.state.stopPlay}
                 onPrepared	= {this.onVideoPrepared}/>
 				
-            {this.state.videoPrepared ? (null) : (<LoadingView/>)}
 			
           </View>
         );

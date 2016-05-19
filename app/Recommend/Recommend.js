@@ -198,11 +198,11 @@ module.exports 	= React.createClass (
 						initialPage 	= {0} 
 						renderTabBar 	= {() => <ScrollableTabBar 
 													style	= {Style.ScrollableTabBar}
-													activeTextColor = {'#FE8A02'}
+													activeTextColor = {'#ff8f00'}
 													inactiveTextColor = {'#262626'}
-													underlineColor = {'#FE8A02'}
+													underlineColor = {'#ff8f00'}
 													moreIcon = {require ('../img/btn_moreMenu.png')}
-													onClickMoreBtn = {this.onPressMenuButtonRight}/>}
+													onClickMoreBtn = {this.props.onPressMenuButtonRight}/>}
 						onChangeTab 	= {this.onChangeTab}
 						ref = {(tabbar)=>_ScrollableTabBar = tabbar}>
 						{child}

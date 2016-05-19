@@ -17,8 +17,8 @@ let ViewStylePropType = StyleSheetPropType(ViewStylePropTypes);
 const propTypes = {
 	onVideoSelected: PropTypes.func,
 	style: ViewStylePropType,
-  programId: PropTypes.string,
-  nodeRelated: PropTypes.array,
+  	programId: PropTypes.string,
+  	nodeRelated: PropTypes.array,
 };
 //综艺选集布局
 class RelatedListLayout extends React.Component {

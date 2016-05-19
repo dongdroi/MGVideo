@@ -133,7 +133,6 @@ class VideoPlayer extends Component {
         dispatch(clearDetail(programId));
     }); 
 	
-	MGPlayerRCTManager.addVideoPrepared (()=>this.onVideoPrepared1);
   }
   
   goBack() {
@@ -150,10 +149,6 @@ class VideoPlayer extends Component {
     Portal.showModal(tag, this.renderShareDialog(title));
   }
   
-  onVideoPrepared1() {
-	  console.log ("111111111 onVideoPrepared");
-     this.setState({videoPrepared: true});
-  }
   onVideoPrepared(event) {
      this.setState({videoPrepared: true});
   }

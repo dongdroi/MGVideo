@@ -76,7 +76,7 @@ var CommonTools = {
   
   myActualPageHeight ()
   {
-	  return(this.screenHeight-(260*this.screenHeight/this.designHeight));
+	  return(this.screenHeight-(300*this.screenHeight/this.designHeight));
   },
   
   myDefaultImage ()

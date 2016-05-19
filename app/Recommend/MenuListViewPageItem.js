@@ -6,6 +6,10 @@ var Dimensions 			= require ('Dimensions');
 var RecommendListCell 	= require ('./RecommendListCell');
 var WaterFall  			= require ('./WaterFall');
 
+var RefreshInfiniteListView = require('@remobile/react-native-refresh-infinite-listview');
+var myList;
+var useRefreshInfiniteListView = false;
+
 var {
 	Text,
 	TouchableOpacity,
@@ -21,7 +25,6 @@ import header, {
   commonColor,
   commonTools,
 } from '../header'
-
 
 var Style = React.StyleSheet.create(
 {
@@ -124,7 +127,8 @@ module.exports = React.createClass (
 				this.setState ({
 					nodeNet:dataArray,
 				});
-				this.appendData (1);
+				this.appendData (useRefreshInfiniteListView?4:1);
+				
 			}
 			
 		},
@@ -132,6 +136,8 @@ module.exports = React.createClass (
 		{
 			this.state.isNeedGetData  = false;
 			console.log("error="+error);
+			
+			
 		},
 		
 		fetchAllData:function ()
@@ -206,9 +212,34 @@ module.exports = React.createClass (
 
 		},
 		
+		onRefresh: function ()
+		{
+			this.state.dataSource= new ListView.DataSource({rowHasChanged: (row1, row2) => row1 !== row2,});
+			this.state.isNeedGetData = true;
+			this.state.nodeNet = new Array ();
+			this.state.contentDatas= new Array ();
+			
+			fetch (Config.ContentObjectServlet (this.props.nodeId))
+			.then ((response) => response.json ())
+			.then ((responseData) => 
+			{
+				this.fetchAllDataSuccess (responseData);
+				if (myList)myList.hideHeader();
+	        })
+			.catch (error => 
+			{
+				this.fetchAllDataFail (error);
+				if (myList)myList.hideHeader();
+			})
+			.done ();
+			
+			
+		},
+		
 		onEndReached: function ()
 		{
 			this.appendData (1);
+			if (myList)myList.hideFooter();
 		},
 		
 	    renderCell: function (nodeNetItem) 
@@ -228,28 +259,61 @@ module.exports = React.createClass (
 				useWaterFall = true;
 			}
 			
-			return (
-				<View 
-					style 	={Style.container}>
-					{
-						useWaterFall?
-						(
-							<WaterFall
-								data 	= {this.state.responseData}>
-							</WaterFall>
-						):
-						(
-							<ListView
-								dataSource 		= {this.state.dataSource}
-		        				renderRow 		= {this.renderCell}
-		        				style 			= {Style.listView}
-								onEndReached 	= {this.onEndReached}>
-							</ListView>
-						)
-					}
+			if (useRefreshInfiniteListView)
+			{
+				return (
+					<View 
+						style 	={Style.container}>
+						{
+							useWaterFall?
+							(
+								<WaterFall
+									data 	= {this.state.responseData}>
+								</WaterFall>
+							):
+							(
+								<RefreshInfiniteListView
+									ref 			= {(list) => {myList= list}}
+									dataSource 		= {this.state.dataSource}
+				        			renderRow 		= {this.renderCell}
+				        			style 			= {Style.listView}
+									onRefresh = {this.onRefresh}
+									onInfinite = {this.onEndReached}>
+								</RefreshInfiniteListView>
+							
+							)
+						}
 					
-				</View>
-			);
+					</View>
+				);
+			}
+			else 
+			{
+				return (
+					<View 
+						style 	={Style.container}>
+						{
+							useWaterFall?
+							(
+								<WaterFall
+									data 	= {this.state.responseData}>
+								</WaterFall>
+							):
+							(
+								<ListView
+									dataSource 		= {this.state.dataSource}
+									renderRow 		= {this.renderCell}
+									style 			= {Style.listView}
+									onEndReached 	= {this.onEndReached}>
+								</ListView>
+							
+							)
+						}
+					
+					</View>
+				);
+			}
+			
 		}
 	}
 );

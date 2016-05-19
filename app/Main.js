@@ -10,7 +10,6 @@ const {
   TouchableOpacity,
   PropTypes,
   InteractionManager,
-  ProgressBarAndroid,
   Image,
   Dimensions,
   View,
@@ -84,16 +83,28 @@ class Main extends React.Component {
     });
   }
   
+  myActualWidth (width) 
+  {
+    return (
+		parseInt (width*Dimensions.get('window').width/750)
+    );
+  }
+  myActualHeight (height) 
+  {
+    return (
+		parseInt (height*Dimensions.get('window').height/1334)
+		
+    );
+  }
   render() {
     const {read, navigator} = this.props;
     return (
         <View style={styles.container}>
-          <TouchableOpacity>
-            <ReadingToolbar
-              navigator={navigator}
-              logo={require('./img/logo.png')}
-            />
-          </TouchableOpacity>
+			<View style={{marginTop:this.myActualHeight(55),flexDirection:'row', alignItems: 'center', height: this.myActualHeight(30), backgroundColor:'white'}}>
+              <TouchableOpacity>
+                <Image style={{marginLeft: 8,marginTop:10, width: this.myActualWidth(160), height: this.myActualHeight(40)}} source={require('./img/logo.png')}></Image>
+              </TouchableOpacity>
+          </View>
           <TabBar>
             <TabBar.Item
               icon={require('./img/recommend_not_choose.png')}

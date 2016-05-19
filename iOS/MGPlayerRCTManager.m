@@ -17,8 +17,6 @@
 
 @property UIActivityIndicatorView *activityIndicator;
 @property(nonatomic) CGPoint center;
-
-@property (nonatomic, copy) RCTResponseSenderBlock preparedCallback;
 @end
 
 @implementation MGPlayerRCTManager
@@ -46,11 +44,11 @@ RCT_EXPORT_MODULE();
   return self.player.view;
 }
 
-RCT_EXPORT_METHOD(addVideoPrepared:(RCTResponseSenderBlock)callback)
-{
- self.preparedCallback = callback;
-//  callback(@[[input stringByReplacingOccurrencesOfString:@"Goodbye" withString:@"Hello"]]);
-}
+//RCT_EXPORT_METHOD(addVideoPrepared:(RCTResponseSenderBlock)callback)
+//{
+// self.preparedCallback = callback;
+////  callback(@[[input stringByReplacingOccurrencesOfString:@"Goodbye" withString:@"Hello"]]);
+//}
 
 
 RCT_EXPORT_METHOD(setUri:(NSString *)uri)

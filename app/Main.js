@@ -24,7 +24,7 @@ import ScrollableTabView from 'react-native-scrollable-tab-view';
 import {ToastShort} from './utils/ToastUtils';
 import Storage from './utils/Storage';
 import {CATEGORIES} from './constants/Alias';
-import VideoContainer from './containers/VideoContainer';
+import ChannelContainer from './containers/ChannelContainer';
 
 import TabBar from 'react-native-xtabbar';
 var Recommend = require('./Recommend/Recommend');
@@ -51,7 +51,7 @@ class Main extends React.Component {
       activeTab: 0,
     };
 
-    //this.onPress = this.onPress.bind(this);
+    this.onPressMenuButtonRight = this.onPressMenuButtonRight.bind(this);
     
     // NativeModules.NetworkModule.getNetworkType((type) => {
     //      //console.log('NetworkType = ' + type);
@@ -74,6 +74,16 @@ class Main extends React.Component {
     }
   }
   
+  onPressMenuButtonRight() {
+    const {navigator} = this.props;
+    InteractionManager.runAfterInteractions(() => {
+      navigator.push({
+        component: ChannelContainer,
+        name: 'Channel',
+      });
+    });
+  }
+  
   render() {
     const {read, navigator} = this.props;
     return (
@@ -90,7 +100,8 @@ class Main extends React.Component {
               selectedIcon={require('./img/recommend_choose.png')}
               onPress={() => {console.log("first onPress");}}
               title='推荐'>
-              <Recommend navigator={navigator}/>
+              <Recommend navigator={navigator} 
+                onPressMenuButtonRight={this.onPressMenuButtonRight}/>
             </TabBar.Item>
           
             <TabBar.Item 

@@ -328,6 +328,7 @@ module.exports 	= React.createClass(
 		{
 			count 	= data.length;
 		}
+		
 		var child 	= new Array();
 		for (var i = 0; i < count; i ++)
 		{
@@ -342,24 +343,25 @@ module.exports 	= React.createClass(
 				</LayoutImageItem>
 			);
 		}
-		
 		children.push (
-			<Carousel 
-				key 					= {0}
-				width 					= {commonTools.screenWidth}
-				height 					= {commonTools.myActualHeight (size[0][1] + 80)}
-				delay 					= {5000} 
-				hideIndicators 			= {false} 
-				indicatorColor 			= {"#007aff"}
-				indicatorSize 			= {commonTools.myActualHeight(40)} 
-				indicatorSpace 			= {commonTools.myActualHeight(20)}
-				inactiveIndicatorColor 	= {"#999999"} 
-				indicatorAtBottom 		= {true}
-				indicatorOffset 		= {commonTools.myActualHeight(60)} 
-				loop 					= {true}>
-				
-				{child}
-			</Carousel>
+			<View 
+				key 	= {0} 
+				style 	= {[Style.horizontalView, {height: 208, marginTop: 4}]}>
+				<Carousel 
+					width 					= {commonTools.screenWidth}
+					delay 					= {5000} 
+					hideIndicators 			= {false} 
+					indicatorColor 			= {"#ff8f00"}
+					indicatorSize 			= {commonTools.myActualHeight(54)} 
+					indicatorSpace 			= {commonTools.myActualHeight(24)}
+					inactiveIndicatorColor 	= {"#fcfcfc"} 
+					indicatorAtBottom 		= {true}
+					indicatorOffset 		= {commonTools.myActualHeight(80)} 
+					loop 					= {true}>
+					
+					{child}
+				</Carousel>
+			</View>
 		);
 		return children;
 	},

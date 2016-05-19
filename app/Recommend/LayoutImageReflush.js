@@ -22,10 +22,8 @@ var Style 	= React.StyleSheet.create (
 	container: 
 	{
 		backgroundColor:'white',
-		marginBottom:commonTools.myActualWidth(0),
-		marginTop:commonTools.myActualWidth(0),
-		padding:0,
-		margin:0,
+		//marginBottom:commonTools.myActualWidth(0),
+		//marginTop:commonTools.myActualWidth(0),
 	},
 	//通用横向布局
 	horizontalView:

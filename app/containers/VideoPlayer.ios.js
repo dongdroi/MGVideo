@@ -84,7 +84,7 @@ class VideoPlayer extends Component {
         rowHasChanged: (row1, row2) => row1 !== row2,
       }),
       videoMarked: false,                             //视频是否收藏
-      stopPlay: false,                                //退出播放界面
+      needStopPlay: false,                                //退出播放界面
       animPlaying: true,                              //进入播放界面的动画
       videoPrepared: false,
     };
@@ -132,7 +132,7 @@ class VideoPlayer extends Component {
   }
   
   goBack() {
-	MGPlayerRCTManager.stop ();
+	  MGPlayerRCTManager.stop ();
     return NaviGoBack(this.props.navigator);
   }
   
@@ -146,12 +146,18 @@ class VideoPlayer extends Component {
   }
   
   onVideoPrepared(event) {
-     console.log('onVideoPrepared ' + event.nativeEvent.state);
-     this.setState({videoPrepared: true});
+     //console.log('onVideoPrepared ' + event.nativeEvent.state);
+     this.setState({
+       needStopPlay: false,
+       videoPrepared: true
+     });
   }
   
   onVideoSelected(programId) {
-    this.setState({videoPrepared: false});
+    this.setState({
+      needStopPlay: true,
+      videoPrepared: false
+    });
     
     const {dispatch, detail} = this.props;
     InteractionManager.runAfterInteractions(() => {
@@ -306,7 +312,7 @@ class VideoPlayer extends Component {
             <MGPlayer 
 				style 		= {styles.content} 
                 videoPath 	= {detail.videoPath} 
-                stopped 	= {this.state.stopPlay}
+                stopped 	= {this.state.needStopPlay}
                 onPrepared	= {this.onVideoPrepared}/>
 				
             {this.state.videoPrepared ? (null) : (<LoadingView/>)}

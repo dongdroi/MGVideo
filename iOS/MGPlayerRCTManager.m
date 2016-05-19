@@ -141,6 +141,12 @@ RCT_EXPORT_METHOD(stop)
   
   startPoint.x += currentTimeRect.size.width + gap;
   
+  //左右轨的图片
+  UIImage *stetchLeftTrack= [UIImage imageNamed:@"slide_bar.png"];
+  UIImage *stetchRightTrack = [UIImage imageNamed:@"slide_bar.png"];
+  //滑块图片
+  UIImage *thumbImage = [UIImage imageNamed:@"slide_mark.png"];
+  
   CGRect sliderRect = CGRectMake(startPoint.x, (viewHeight - 20)/2, self.center.x*2 - startPoint.x - currentTimeRect.size.width - gap*2 - buttonRect.size.width, 20);
   self.mediaProgressSlider = [[UISlider alloc]initWithFrame:sliderRect];
   [self.mediaProgressSlider addTarget:self action:@selector(sliderValueChanged:) forControlEvents:UIControlEventValueChanged];
@@ -148,6 +154,11 @@ RCT_EXPORT_METHOD(stop)
   [self.mediaProgressSlider addTarget:self action:@selector(endDragMediaSlider:)  forControlEvents:UIControlEventTouchCancel];
   [self.mediaProgressSlider addTarget:self action:@selector(didSliderTouchUpInside:)  forControlEvents:UIControlEventTouchUpInside];
   [self.mediaProgressSlider addTarget:self action:@selector(didSliderTouchUpOutside:)  forControlEvents:UIControlEventTouchUpOutside];
+  
+  [self.mediaProgressSlider setMinimumTrackImage:stetchLeftTrack forState:UIControlStateNormal];
+  [self.mediaProgressSlider setMaximumTrackImage:stetchRightTrack forState:UIControlStateNormal];
+  [self.mediaProgressSlider setThumbImage:thumbImage forState:UIControlStateHighlighted];
+  [self.mediaProgressSlider setThumbImage:thumbImage forState:UIControlStateNormal];
   [bottomView addSubview:self.mediaProgressSlider];
   
   startPoint.x += sliderRect.size.width + gap;
@@ -226,7 +237,7 @@ RCT_EXPORT_METHOD(stop)
 }
 
 /**
- *控制界面的显示和去除
+ *控制界面的显示和隐藏
  */
 - (void) playerTouchDown:(id)sender
 {
@@ -267,6 +278,7 @@ RCT_EXPORT_METHOD(stop)
   if (self.player)
   {
     [self.player play];
+    [self showAndFade];
   }
   
 }
@@ -275,6 +287,7 @@ RCT_EXPORT_METHOD(stop)
   if (self.player)
   {
     [self.player pause];
+    [self showAndFade];
   }
 }
 
@@ -292,21 +305,25 @@ RCT_EXPORT_METHOD(stop)
 - (void) beginDragMediaSlider:(id)sender
 {
   _isMediaSliderBeingDragged = YES;
+   [self showNoFade];
 }
 - (void) didSliderTouchUpInside:(id)sender
 {
   [self.player setCurrentPlaybackTime:self.mediaProgressSlider.value];
   _isMediaSliderBeingDragged = NO;
+  [self showAndFade];
 }
 - (void) didSliderTouchUpOutside:(id)sender
 {
   [self.player setCurrentPlaybackTime:self.mediaProgressSlider.value];
   _isMediaSliderBeingDragged = NO;
+  [self showAndFade];
 }
 
 - (void) endDragMediaSlider:(id)sender
 {
   _isMediaSliderBeingDragged = NO;
+  [self showAndFade];
 }
 
 

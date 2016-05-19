@@ -80,15 +80,13 @@ class VideoPlayer extends Component {
         rowHasChanged: (row1, row2) => row1 !== row2,
       }),
       videoMarked: false,                             //视频是否收藏
-      needStopPlay: false,                                //退出播放界面
+      needStopPlay: false,                            //退出播放界面
       animPlaying: true,                              //进入播放界面的动画
-      videoPrepared: false,
     };
     this.renderItem = this.renderItem.bind(this);
     this.goBack = this.goBack.bind(this);
     this.onMarkButtonPress = this.onMarkButtonPress.bind(this);
     this.onShareButtonPress = this.onShareButtonPress.bind(this);
-    this.onVideoPrepared = this.onVideoPrepared.bind(this);
     this.onVideoSelected = this.onVideoSelected.bind(this);
     this.onBillItemClicked = this.onBillItemClicked.bind(this);
   }
@@ -146,30 +144,14 @@ class VideoPlayer extends Component {
     Portal.showModal(tag, this.renderShareDialog(title));
   }
   
-  onVideoPrepared(event) {
-    //console.log('onVideoPrepared ' + event.nativeEvent.state);
-    this.setState({
-        needStopPlay: false,
-        videoPrepared: true
-    });
-  }
-  
   onVideoSelected(programId) {
-    this.setState({
-        needStopPlay: true,
-        videoPrepared: false
-    });
-    
     const {dispatch, detail} = this.props;
     InteractionManager.runAfterInteractions(() => {
-        detail.videoPath = '';
         dispatch(fetchDetail(programId));
     }); 
   }
   
   onBillItemClicked(start, end) {
-    this.setState({videoPrepared: false});
-    
 		const {dispatch, detail} = this.props;
     var contentId = detail.nodeDetail.fields.MMS_ID;
 		var visitPath = detail.nodeDetail.fields.mediafiles.mediafile[1].visitPath;
@@ -177,7 +159,6 @@ class VideoPlayer extends Component {
 		var startTime = start.format('yyyyMMddhhmmss');
 		var endTime = end.format('yyyyMMddhhmmss');
 		InteractionManager.runAfterInteractions(() => {
-        detail.videoPath = '';
 			  dispatch(fetchVideoPath(visitPath, contentId, startTime, endTime));
 		});
   }
@@ -295,28 +276,12 @@ class VideoPlayer extends Component {
       }
 
       videoName = fields.Name;
-      //videoPath = fields.mediafiles.mediafile[1].mediaFilePreviewPath;
-      
+        
       if (nodeDetail.fields.SerialCount > 0) {
          serialIds = nodeDetail.fields.SubSerial_IDS;
       }
     }
     
-    var lists = [];
-    if (!this.state.animPlaying && detail.videoPath != '') {
-        lists.push(
-          <View key={0} style={styles.content}>
-            <MGVideo style={styles.content} 
-                videoPath={detail.videoPath} 
-                stopped={this.state.needStopPlay}
-                onPrepared={this.onVideoPrepared}/>
-            {this.state.videoPrepared ? (null) : (<LoadingView/>)}
-          </View>
-        );
-    } else {
-        lists.push(<View key={1} style={styles.content}/>);
-    }
-
     var serialLists = [];
     if (fields.DISPLAYTYPE == '500020') {
        if (detail.playBill.Playbill != undefined) {
@@ -345,24 +310,16 @@ class VideoPlayer extends Component {
         }
     }
     
-    //var comments = [];
-    //if (nodeDetail.fields != undefined) {
-    //  for (var i = 0; i < 10; i++) {
-    //    comments.push({name: '用户' + i, comment: 'React native', time: '4小时之前'});
-    //  }
-    //}
-    /*
-    <ListView
-      initialListSize={1}
-      dataSource={this.state.dataSource.cloneWithRows([])}
-      renderRow={this.renderItem}
-      style={styles.listView}>
-    </ListView>        
-    */
     return (
          <View style={styles.container}>
             <View style={{height: VideoHeight, backgroundColor:'black'}}>
-              {lists}
+              <View key={0} style={styles.content}>
+                {this.state.animPlaying ? (null) : 
+                  <MGVideo style={styles.content} 
+                      videoPath={detail.videoPath} 
+                      stopped={this.state.needStopPlay}/>
+                }
+              </View>
               <TouchableOpacity style={styles.gotoback} onPress={this.goBack}>
                  <Image style={{width: 24, height: 24}} 
                   source={require('../img/ic_video_back.png')}></Image>

@@ -59,15 +59,11 @@ export function fetchDetail(programId) {
 					}
 				 	dispatch(fetchPlayBill(nodeDetail.fields.MMS_ID));
 			    } else {
-					//咪咕新闻汇
-					if (nodeDetail.fields.DISPLAYTYPE == '1004') {
+					//电视剧,咪咕新闻汇
+					if (nodeDetail.fields.SerialContentID != '' || nodeDetail.fields.Album_IDS != '') {
 						dispatch(receiveNodeContent(nodeDetail));
 					} else {
-						if (nodeDetail.fields.SerialContentID == '') {
-							dispatch(receiveNodeDetail(nodeDetail));
-						} else {
-							dispatch(receiveNodeContent(nodeDetail));
-						}
+						dispatch(receiveNodeDetail(nodeDetail));
 					}
 					
 					//获取真实播放链接

@@ -245,6 +245,13 @@ class VideoPlayer extends Component {
     );
   }
   
+  myCallBack (e1,e2,e3)
+  {
+	  // console.log ("-----------------------------"+e[0]+"="+e[1]);
+	  
+	  console.log ("-------------11111-----------"+JSON.stringify(e1)+"="+JSON.stringify(e2)+"="+JSON.stringify(e3));
+  }
+  
   render() {
     //const {route} = this.props;
     const {navigator, detail} = this.props;
@@ -303,6 +310,8 @@ class VideoPlayer extends Component {
 	{
 		MGPlayerRCTManager.setUri(detail.videoPath);
 		MGPlayerRCTManager.setScreen (VideoWidth, VideoHeight);
+		MGPlayerRCTManager.setCallBack (this.myCallBack);
+		
         lists.push(
           <View 
 				key 	= {0} 

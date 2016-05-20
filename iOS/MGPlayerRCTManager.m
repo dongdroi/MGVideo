@@ -25,6 +25,9 @@
 @property(nonatomic,strong) UILabel *currentTimeLabel;
 @property(nonatomic,strong) UILabel *totalDurationLabel;
 @property(nonatomic,strong) UISlider *mediaProgressSlider;
+
+
+@property (nonatomic, copy) RCTResponseSenderBlock myCallBack;
 @end
 
 @implementation MGPlayerRCTManager
@@ -75,12 +78,20 @@ RCT_EXPORT_METHOD(stop)
     [self.player pause];
     [self.player stop];
     [self.player shutdown:NO];
-    self.player   = nil;
-    
-    [self removeMovieNotificationObservers];
   }
+  
+  self.player   = nil;
+  self.myCallBack = nil;
+  
+  [self removeMovieNotificationObservers];
 
 }
+
+RCT_EXPORT_METHOD(setCallBack:(RCTResponseSenderBlock)callback)
+{
+  self.myCallBack = callback;
+}
+
 
 -(void)initLoading
 {
@@ -367,6 +378,7 @@ RCT_EXPORT_METHOD(stop)
   if ((loadState & MGMPMovieLoadStatePlaythroughOK) != 0)
   {
     [self.activityIndicator stopAnimating];
+//    if (self.myCallBack)self.myCallBack(@[@"test0",@"test",@"test2"]);
   }
   else if ((loadState & MGMPMovieLoadStateStalled) != 0)
   {

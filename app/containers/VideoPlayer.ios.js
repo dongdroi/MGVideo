@@ -271,7 +271,6 @@ class VideoPlayer extends Component {
     //var videoPath;
     console.log("VideoPlayer nodeDetail detail = " + nodeDetail.fields 
         + ",content = " + nodeContent.fields + ',videoPath = ' + detail.videoPath);
-    var serialIds;
     
     if (fields == undefined) {
       return <LoadingView/>;
@@ -299,10 +298,6 @@ class VideoPlayer extends Component {
 
       videoName = fields.Name;
       //videoPath = fields.mediafiles.mediafile[1].mediaFilePreviewPath;
-      
-      if (nodeDetail.fields.SerialCount > 0) {
-         serialIds = nodeDetail.fields.SubSerial_IDS;
-      }
     }
     
     var lists = [];
@@ -339,6 +334,10 @@ class VideoPlayer extends Component {
          );
        }
     } else {
+        var serialIds = [];
+        if (nodeDetail.fields != undefined && nodeDetail.fields.SerialCount > 0) {
+          serialIds = nodeDetail.fields.SubSerial_IDS;
+        }
         serialLists.push(
           <VideoDetailLayout key={1} style={styles.videoDetail} detail={videoDetail} programId={programId}/>
         );

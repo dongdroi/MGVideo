@@ -78,10 +78,12 @@ RCT_EXPORT_METHOD(stop)
     [self.player pause];
     [self.player stop];
     [self.player shutdown:NO];
-    self.player   = nil;
-    
-    [self removeMovieNotificationObservers];
   }
+  
+  self.player   = nil;
+  self.myCallBack = nil;
+  
+  [self removeMovieNotificationObservers];
 
 }
 
@@ -376,7 +378,7 @@ RCT_EXPORT_METHOD(setCallBack:(RCTResponseSenderBlock)callback)
   if ((loadState & MGMPMovieLoadStatePlaythroughOK) != 0)
   {
     [self.activityIndicator stopAnimating];
-    self.myCallBack(@[@"test0",@"test",@"test2"]);
+//    if (self.myCallBack)self.myCallBack(@[@"test0",@"test",@"test2"]);
   }
   else if ((loadState & MGMPMovieLoadStateStalled) != 0)
   {

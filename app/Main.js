@@ -74,12 +74,13 @@ class Main extends React.Component {
     }
   }
   
-  onPressMenuButtonRight() {
+  onPressMenuButtonRight(data) {
     const {navigator} = this.props;
     InteractionManager.runAfterInteractions(() => {
       navigator.push({
-        component: ChannelContainer,
-        name: 'Channel',
+        	component: ChannelContainer,
+        	name: 'Channel',
+		  	data: data,
       });
     });
   }

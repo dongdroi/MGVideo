@@ -134,6 +134,10 @@ module.exports 	= React.createClass (
 				// menuData[i].showCount 	= data[i].showCount;
 				// menuData[i].lookType 	= data[i].lookType;
 			}
+			if (this.props.finishGetData)
+			{
+				this.props.finishGetData (menuData);
+			}
 			this.setState ({
 			});
 			this.gotoPage (0);

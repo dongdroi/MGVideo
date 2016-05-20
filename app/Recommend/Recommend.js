@@ -94,7 +94,6 @@ var Style = React.StyleSheet.create (
     },
 });
 
-
 module.exports 	= React.createClass (
 	{
 		getInitialState: function ()
@@ -122,10 +121,10 @@ module.exports 	= React.createClass (
 				var value 		= responseData[NodeId][i].fields.VALUE;
 				
 				this.state.menuData[i] 			= {};
-				this.state.menuData[i].title 		= name;
-				this.state.menuData[i].nodeId 		= nodeId;
+				this.state.menuData[i].title 	= name;
+				this.state.menuData[i].nodeId 	= nodeId;
 				this.state.menuData[i].src 		= src;
-				this.state.menuData[i].value 		= value;
+				this.state.menuData[i].value 	= value;
 			}
 			this.state.finishFetchData = true;
 			this.forceUpdate ();
@@ -158,6 +157,35 @@ module.exports 	= React.createClass (
 		getNodeId ()
 		{
 			return NodeId;
+		},
+		
+		finishGetData:function (data)
+		{
+			this.state.menuData = new Array ();
+			for (var i in data)
+			{
+				this.state.menuData[i] = {};
+				this.state.menuData[i].title 	= data[i].title;
+				this.state.menuData[i].nodeId 	= data[i].nodeId;
+				this.state.menuData[i].src 		= data[i].src;
+				this.state.menuData[i].value 	= data[i].value;
+			}
+		},
+		clickRightButton:function()
+		{
+			if (this.props.onPressMenuButtonRight)
+			{
+				var arr = new Array ();
+				for (var i = 0 ; i < this.state.menuData.length - 1; i += 2)
+				{
+					if ( i + 1 < this.state.menuData.length)
+					{
+						arr.push (new Array (this.state.menuData[i].title, this.state.menuData[i+1].title));
+					}
+					
+				}
+				this.props.onPressMenuButtonRight (arr);
+			}
 		},
 		
 		onChangeTab:function (page)
@@ -202,7 +230,7 @@ module.exports 	= React.createClass (
 													inactiveTextColor = {'#262626'}
 													underlineColor = {'#ff8f00'}
 													moreIcon = {require ('../img/btn_moreMenu.png')}
-													onClickMoreBtn = {this.props.onPressMenuButtonRight}/>}
+													onClickMoreBtn = {this.clickRightButton}/>}
 						onChangeTab 	= {this.onChangeTab}
 						ref = {(tabbar)=>_ScrollableTabBar = tabbar}>
 						{child}
@@ -249,7 +277,8 @@ module.exports 	= React.createClass (
 						<MenuListViewPage 
 							NodeId 		= {this.getNodeId()}
 							navigator   = {this.props.navigator}
-							onClickMoreBtn = {this.props.onPressMenuButtonRight}>
+							onClickMoreBtn = {this.clickRightButton}
+							finishGetData = {this.finishGetData}>
 						</MenuListViewPage>
 					</View>
 				);

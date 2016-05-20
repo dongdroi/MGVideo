@@ -2,22 +2,26 @@
 
 import React from 'react-native';
 const {
-  View,
-  Text,
-  Image,
-  Component,
-  StyleSheet,
-  TouchableOpacity,
+  	View,
+  	Text,
+  	Image,
+  	Component,
+  	StyleSheet,
+	Platform,
+  	TouchableOpacity,
 } = React;
 
 import {NaviGoBack} from '../utils/CommonUtils';
 import ReadingToolbar from '../components/ReadingToolbar';
 
-const Category = [['精选', '直播'], ['电视剧', '电影'], ['资讯', '综艺'], ['动漫', '娱乐'], ['超女直通区', '片花'], ['搞笑', '原创'], ['体育', '纪录片'], ['生活', '旅游'], ['印象天下', 'G客G拍']];
+var Category;
 
 class ChannelContainer extends Component {
   constructor(props) {
     super(props);
+	
+    Category = this.props.route.data;
+	
     this.onPress = this.onPress.bind(this);
   }
   
@@ -68,7 +72,7 @@ let styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'column',
     backgroundColor: '#f0f0f0',
-	  marginTop:20,
+	  marginTop:(Platform.OS == 'android'?(0):(20)),
   },
 })
 

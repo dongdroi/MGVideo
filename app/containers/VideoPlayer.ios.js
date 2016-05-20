@@ -339,7 +339,7 @@ class VideoPlayer extends Component {
                 serialWidth={serialWidth} serialHeight={serialHeight} serialIds={serialIds}
                 programId={programId} onVideoSelected={this.onVideoSelected}/>
           );
-        } else if (fields.DISPLAYTYPE == '1005') {
+        } else if (fields.DISPLAYTYPE == '1005' || fields.DISPLAYTYPE == '1004') {
             if (detail.nodeRelated.length == 3) {
                 serialLists.push(
                   <RelatedListLayout key={3} style={styles.serialGrid} programId={programId} 

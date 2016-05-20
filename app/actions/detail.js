@@ -31,32 +31,47 @@ export function fetchDetail(programId) {
 			.then((nodeDetail) => {
 			 	//console.log('fetchDetail nodeDetail = ' + nodeDetail);
 				//如果是电视剧/综艺界面，直接获取第一集信息
-				if (nodeDetail.fields.SerialCount > 0) {
-					var serialIds = nodeDetail.fields.SubSerial_IDS.split(',');
-					dispatch(fetchNodeContent(serialIds[0], nodeDetail));
-				 	//综艺选集
-					if (nodeDetail.fields.DISPLAYTYPE == '1005') {
-						for (var i = 0; i < 3; i++) {
-							dispatch(fetchNodeRelated(serialIds[i]));
+				if (nodeDetail.fields.SerialCount > 0 || nodeDetail.fields.SubAlbum_IDS.length > 0) {
+					var serialIds;
+					//咪咕新闻汇
+					if (nodeDetail.fields.DISPLAYTYPE == '1004') {
+						serialIds = nodeDetail.fields.SubAlbum_IDS.split(',');
+					} else {
+					 	serialIds = nodeDetail.fields.SubSerial_IDS.split(',');
+					}
+					if (serialIds != undefined) {
+						dispatch(fetchNodeContent(serialIds[0], nodeDetail));
+						//综艺选集
+						if ((nodeDetail.fields.DISPLAYTYPE == '1005' || 
+							nodeDetail.fields.DISPLAYTYPE == '1004') && serialIds.length >= 3) {
+							for (var i = 0; i < 3; i++) {
+								dispatch(fetchNodeRelated(serialIds[i]));
+							}
 						}
 					}
 				} else if (nodeDetail.fields.DISPLAYTYPE == '500020') {
 					dispatch(receiveNodeDetail(nodeDetail));
 					//获取真实播放链接
-					if (nodeDetail.fields.mediafiles != '') {
+					if (nodeDetail.fields.mediafiles.mediafile != undefined) {
 						var visitPath = nodeDetail.fields.mediafiles.mediafile[1].visitPath;
 						var contentId = nodeDetail.fields.MMS_ID;
 						dispatch(fetchVideoPath(visitPath, contentId));
 					}
 				 	dispatch(fetchPlayBill(nodeDetail.fields.MMS_ID));
 			    } else {
-					if (nodeDetail.fields.SerialContentID == '') {
-						dispatch(receiveNodeDetail(nodeDetail));
-					} else {
+					//咪咕新闻汇
+					if (nodeDetail.fields.DISPLAYTYPE == '1004') {
 						dispatch(receiveNodeContent(nodeDetail));
+					} else {
+						if (nodeDetail.fields.SerialContentID == '') {
+							dispatch(receiveNodeDetail(nodeDetail));
+						} else {
+							dispatch(receiveNodeContent(nodeDetail));
+						}
 					}
+					
 					//获取真实播放链接
-					if (nodeDetail.fields.mediafiles != '') {
+					if (nodeDetail.fields.mediafiles.mediafile != undefined) {
 						var visitPath = nodeDetail.fields.mediafiles.mediafile[1].visitPath;
 						var contentId = nodeDetail.fields.MMS_ID;
 						dispatch(fetchVideoPath(visitPath, contentId));

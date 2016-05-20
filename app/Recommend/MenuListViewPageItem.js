@@ -246,8 +246,8 @@ module.exports = React.createClass (
 		{
 	      return (
 			  <RecommendListCell
-				data 	= {nodeNetItem}
-				navigator = {this.props.navigator}/>
+				data 		= {nodeNetItem}
+				navigator 	= {this.props.navigator}/>
 	      );
 	    },
 		
@@ -277,8 +277,8 @@ module.exports = React.createClass (
 									dataSource 		= {this.state.dataSource}
 				        			renderRow 		= {this.renderCell}
 				        			style 			= {Style.listView}
-									onRefresh = {this.onRefresh}
-									onInfinite = {this.onEndReached}>
+									onRefresh 		= {this.onRefresh}
+									onInfinite 		= {this.onEndReached}>
 								</RefreshInfiniteListView>
 							
 							)

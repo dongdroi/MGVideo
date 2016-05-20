@@ -247,7 +247,7 @@ module.exports 	= React.createClass (
 							style 	= {Style.topView}>
 						</View>
 						<MenuListViewPage 
-							NodeId 	= {this.getNodeId()}
+							NodeId 		= {this.getNodeId()}
 							navigator   = {this.props.navigator}>
 						</MenuListViewPage>
 					</View>

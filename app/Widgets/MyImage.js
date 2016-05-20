@@ -65,7 +65,7 @@ var MyImage = React.createClass (
 		render:function()
 		{
 			var info = this.props.info.length>20?(this.props.info.substr(0,20) + '...'):(this.props.info)
-			var imageWidth = this.props.width - 2 * 8;
+			var imageWidth = this.props.width - 2 * 2;
 			return (
        			<View style		= {{
 							flex: 1, 

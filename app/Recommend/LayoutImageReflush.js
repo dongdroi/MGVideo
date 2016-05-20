@@ -73,6 +73,7 @@ var Style 	= React.StyleSheet.create (
       	justifyContent: 'center',
       	alignItems: 'center',
 		marginTop: 8,
+		paddingBottom:10,
 		backgroundColor:commonColor.bottomView,
 	},
 	//底部的按钮

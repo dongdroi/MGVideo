@@ -45,27 +45,27 @@ var Style = React.StyleSheet.create(
 	},
     menuView: 
 	{
-      width: commonTools.screenWidth,
-      height: commonTools.actualWidth (25),
+      	width: commonTools.screenWidth,
+      	height: commonTools.actualWidth (25),
     },
     menuButton: 
 	{
-      position: 'absolute',
-      right: 0,
-      bottom: 0,
-      width: commonTools.actualWidth (35),
-      height: commonTools.actualWidth (35),
-      alignItems: 'center',
-      justifyContent: 'center',
+      	position: 'absolute',
+      	right: 0,
+      	top: commonTools.actualWidth (-5),
+      	width: commonTools.actualWidth (35),
+      	height: commonTools.actualWidth (35),
+      	alignItems: 'center',
+      	justifyContent: 'center',
     },
     separator: 
 	{
-      position: 'absolute',
-      left: 0,
-      bottom: 0,
-      height: commonTools.pixel,
-      width: commonTools.screenWidth,
-      backgroundColor: commonColor.separatorColor,
+      	position: 'absolute',
+      	left: 0,
+      	bottom: 0,
+      	height: commonTools.pixel,
+      	width: commonTools.screenWidth,
+      	backgroundColor: commonColor.separatorColor,
     },
 	pages:
 	{
@@ -175,7 +175,7 @@ module.exports 	= React.createClass (
 					nodeId 	= {menuData[i].nodeId}
 					src 	= {menuData[i].src}
 					value 	= {menuData[i].value} 
-					navigator = {this.props.navigator}
+					navigator 	= {this.props.navigator}
 					// showCount={menuData[i].showCount}
 					// lookType={menuData[i].lookType}
 					ref 	= {(menuListViewPageItem) => {_MenuListViewPageItems.push(menuListViewPageItem); }}>

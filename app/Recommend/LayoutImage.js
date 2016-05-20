@@ -66,7 +66,7 @@ var Style 	= React.StyleSheet.create (
 		fontSize:commonTools.myActualWidth (20),
 		color:'#969696',
 		paddingTop:commonTools.myActualWidth (5),
-		marginLeft: 0,
+		marginLeft: 8,
 	},
 	activeDot:
 	{

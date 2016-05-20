@@ -13,7 +13,8 @@ const {
   Image,
   Dimensions,
   View,
-  NativeModules
+  NativeModules,
+  Platform
 } = React;
 import LoadingView from './components/LoadingView';
 import {fetchMovies,fetchNodes} from './actions/read';
@@ -93,16 +94,17 @@ class Main extends React.Component {
   {
     return (
 		parseInt (height*Dimensions.get('window').height/1334)
-		
+    
     );
   }
   render() {
     const {read, navigator} = this.props;
+    var isAndroid = Platform.OS === 'android';
     return (
         <View style={styles.container}>
-			<View style={{marginTop:this.myActualHeight(55),flexDirection:'row', alignItems: 'center', height: this.myActualHeight(30), backgroundColor:'white'}}>
+			    <View style={{marginTop:isAndroid ? 0 : this.myActualHeight(55), flexDirection:'row', alignItems: 'center', height: this.myActualHeight(88), backgroundColor:'white'}}>
               <TouchableOpacity>
-                <Image style={{marginLeft: 8,marginTop:10, width: this.myActualWidth(160), height: this.myActualHeight(40)}} source={require('./img/logo.png')}></Image>
+                <Image style={{marginLeft: this.myActualWidth(30), width: this.myActualWidth(160), height: this.myActualHeight(40)}} source={require('./img/logo.png')}></Image>
               </TouchableOpacity>
           </View>
           <TabBar>

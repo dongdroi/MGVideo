@@ -333,7 +333,7 @@ class VideoPlayer extends Component {
         serialLists.push(
           <VideoDetailLayout key={1} style={styles.videoDetail} detail={videoDetail} programId={programId}/>
         );
-        if (fields.DISPLAYTYPE == '1001') {
+        if (fields.DISPLAYTYPE == '1001' || fields.DISPLAYTYPE == '1007') {
           serialLists.push(
             <SerialGridLayout key={2} style={styles.serialGrid} serialGap={serialGap} 
                 serialWidth={serialWidth} serialHeight={serialHeight} serialIds={serialIds}

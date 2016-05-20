@@ -102,7 +102,7 @@ class Main extends React.Component {
     var isAndroid = Platform.OS === 'android';
     return (
         <View style={styles.container}>
-			    <View style={{marginTop:isAndroid ? 0 : this.myActualHeight(55), flexDirection:'row', alignItems: 'center', height: this.myActualHeight(88), backgroundColor:'white'}}>
+			    <View style={{marginTop:isAndroid ? 0 : this.myActualHeight(55), flexDirection:'row', alignItems: 'center', height: this.myActualHeight(isAndroid ? (88):(30)), backgroundColor:'white'}}>
               <TouchableOpacity>
                 <Image style={{marginLeft: this.myActualWidth(30), width: this.myActualWidth(160), height: this.myActualHeight(40)}} source={require('./img/logo.png')}></Image>
               </TouchableOpacity>

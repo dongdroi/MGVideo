@@ -248,7 +248,8 @@ module.exports 	= React.createClass (
 						</View>
 						<MenuListViewPage 
 							NodeId 		= {this.getNodeId()}
-							navigator   = {this.props.navigator}>
+							navigator   = {this.props.navigator}
+							onClickMoreBtn = {this.props.onPressMenuButtonRight}>
 						</MenuListViewPage>
 					</View>
 				);

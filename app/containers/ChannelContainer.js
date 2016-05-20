@@ -43,13 +43,16 @@ class ChannelContainer extends Component {
   render() {
     return (
           <View style={styles.container}>
-              <View style={{flexDirection:'row', alignItems: 'center', height: 56, backgroundColor:'white'}}>
-                <TouchableOpacity onPress={this.onPress}>
-                  <Image style={{marginLeft:8, width:32, height: 32}} source={require('../img/ic_back_btn.png')}></Image>
-                </TouchableOpacity>
+              <View style={{flexDirection:'row', alignItems: 'center', height: 35, backgroundColor:'white'}}>
+                
                 <View style={{position:'absolute', top: 0, left: 0, right:0, bottom: 0, alignItems: 'center', justifyContent: 'center'}}>
                   <Text style={{fontSize:16, color:'black',fontWeight:'bold'}}>频道</Text>
                 </View>
+		
+                <TouchableOpacity onPress={this.onPress} style={{position:'absolute', left: 8, alignItems: 'center',justifyContent: 'center' }}>
+                  <Image style={{ width:32, height: 32}} source={require('../img/ic_back_btn.png')}></Image>
+                </TouchableOpacity>
+		
               </View>
 
               <View style={{flexDirection:'column', marginTop: 8, backgroundColor:'white'}}>
@@ -64,7 +67,8 @@ let styles = StyleSheet.create({
   container: {
     flex: 1,
     flexDirection: 'column',
-    backgroundColor: '#f0f0f0'
+    backgroundColor: '#f0f0f0',
+	  marginTop:20,
   },
 })
 

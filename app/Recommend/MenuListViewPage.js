@@ -46,15 +46,15 @@ var Style = React.StyleSheet.create(
     menuView: 
 	{
       	width: commonTools.screenWidth,
-      	height: commonTools.actualWidth (25),
+      	height: commonTools.actualWidth (40),
     },
     menuButton: 
 	{
       	position: 'absolute',
       	right: 0,
-      	top: commonTools.actualWidth (-5),
-      	width: commonTools.actualWidth (35),
-      	height: commonTools.actualWidth (35),
+      	top: commonTools.actualWidth (0),
+      	width: commonTools.actualWidth (40),
+      	height: commonTools.actualWidth (40),
       	alignItems: 'center',
       	justifyContent: 'center',
     },
@@ -142,7 +142,11 @@ module.exports 	= React.createClass (
 		//顶部的menuitem最右边的更多按钮
 		onPressMenuButtonRight: function ()
 		{
-			this.gotoPage(5);
+			// this.gotoPage(5);
+			if (this.props.onClickMoreBtn)
+			{
+				this.props.onClickMoreBtn ();
+			}
 		},
 		
 		//下部的page页面

@@ -112,7 +112,7 @@ export function fetchNodeRelated(programeId) {
 	return dispatch => {
 		return request(GET_PROGRAME_SERVLET + '?programeId=' + programeId, 'get')
 			.then((nodeContent) => {
-				console.log('fetchNodeRelated nodeContent = ' + nodeContent);
+				//console.log('fetchNodeRelated nodeContent = ' + nodeContent);
 				dispatch(receiveNodeRelated(nodeContent));
 			})
 			.catch((error) => {
@@ -125,7 +125,7 @@ export function fetchPlayBill(contentId) {
 	return dispatch => {
 		return request(GET_PLAYBILL_SERVLET + '?contentId=' + contentId, 'get')
 			.then((playBill) => {
-				console.log('fetchPlayBill playBill = ' + playBill);
+				//console.log('fetchPlayBill playBill = ' + playBill);
 				dispatch(receivePlayBill(playBill));
 			})
 			.catch((error) => {

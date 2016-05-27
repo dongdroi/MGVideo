@@ -13,6 +13,7 @@ import React, {
   ScrollView,
   TouchableOpacity,
   InteractionManager,
+  NativeModules,
 } from 'react-native';
 
 import PlayBillLayout from '../layouts/PlayBillLayout';
@@ -31,6 +32,8 @@ import Portal from 'react-native/Libraries/Portal/Portal.js';
 
 import ReadingTabBar from '../components/ReadingTabBar';
 import ScrollableTabView from 'react-native-scrollable-tab-view';
+
+import Share from 'react-native-share';
 
 var Dimensions = require('Dimensions');
 //var TimerMixin = require('react-timer-mixin');
@@ -164,51 +167,7 @@ class VideoPlayer extends Component {
   }
   
   renderShareDialog(title) {
-    const {route} = this.props;
-    return (
-      <View
-        key={'spinner'}
-        style={styles.spinner}
-      >
-        <View style={styles.spinnerContent}>
-          <Text style={[styles.spinnerTitle, {fontSize: 20, color: 'black'}]}>
-            分享到
-          </Text>
-          <View style={{flexDirection: 'row', marginTop: 20}}>
-            <TouchableOpacity
-              style={{flex: 1}}
-              onPress={() => {
-               
-            }}>
-              <View style={styles.shareContent}>
-                <Image
-                  style={styles.shareIcon}
-                  source={require('../img/share_icon_wechat.png')}
-                />
-                <Text style={styles.spinnerTitle}>
-                  微信
-                </Text>
-              </View>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={{flex: 1}}
-              onPress={() => {
-                
-            }}>
-              <View style={styles.shareContent}>
-                <Image
-                  style={styles.shareIcon}
-                  source={require('../img/share_icon_moments.png')}
-                />
-                <Text style={styles.spinnerTitle}>
-                  朋友圈
-                </Text>
-              </View>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </View>
-    );
+     NativeModules.MGShareSdk.share(0);
   }
   
   renderItem(item) {

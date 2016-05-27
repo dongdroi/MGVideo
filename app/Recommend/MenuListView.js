@@ -96,29 +96,27 @@ class MenuListView extends Component
 	{
 		for (var i in responseData[this.props.nodeid])
 		{
-			
-			// var status = responseData[this.props.nodeid][i].status;
-			// if (status == 1)//需要添加的选项
-			// {
-			//
-			// }
-			
-			var name 		= responseData[this.props.nodeid][i].name;
-			var nodeId 		= responseData[this.props.nodeid][i].fields.REDREICT_ID;
-			var src 		= responseData[this.props.nodeid][i].fields.IMAGES.image.src;
-			var value 		= responseData[this.props.nodeid][i].fields.VALUE;
-			
-			// var showCount 	= responseData[this.props.nodeid][i].fields.REDREICT_NODE_INFO.showCount;
-// 			var lookType 	= responseData[this.props.nodeid][i].fields.REDREICT_NODE_INFO.lookType;
-// 			//0，列表式导航；1，标签式导航；2，评书式导航；3，排行榜导航；4，矩阵式内容集；5，列表式内容集；6，音频式内容集；7，图片式内容集
+			var name 		= "";
+			var nodeId 		= "";
+			var src 		= "";
+			var value 		= "";
+			try
+			{
+				name 		= responseData[this.props.nodeid][i].name;
+				nodeId 		= responseData[this.props.nodeid][i].fields.REDREICT_ID;
+				value 		= responseData[this.props.nodeid][i].fields.VALUE;
+				src 		= responseData[this.props.nodeid][i].fields.IMAGES.image.src;
+			}
+			catch (e)
+			{
+				
+			}
 			
 			menuData[i] 			= {};
 			menuData[i].title 		= name;
 			menuData[i].nodeId 		= nodeId;
 			menuData[i].src 		= src;
 			menuData[i].value 		= value;
-			// menuData[i].showCount 	= showCount;
-			// menuData[i].lookType 	= lookType;
 			menuData[i].offset 		= commonTools.actualWidth(actualWidth)*name.length+commonTools.actualWidth(10)+commonTools.actualWidth(10);
 		}
 		

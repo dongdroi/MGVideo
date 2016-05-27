@@ -115,10 +115,21 @@ module.exports 	= React.createClass (
 			this.state.menuData = new Array ();
 			for (var i in responseData[NodeId])
 			{
-				var name 		= responseData[NodeId][i].name;
-				var nodeId 		= responseData[NodeId][i].fields.REDREICT_ID;
-				var src 		= responseData[NodeId][i].fields.IMAGES.image.src;
-				var value 		= responseData[NodeId][i].fields.VALUE;
+				var name 		= "";
+				var nodeId 		= "";
+				var src 		= "";
+				var value 		= "";
+				try
+				{
+					name 		= responseData[this.props.nodeid][i].name;
+					nodeId 		= responseData[this.props.nodeid][i].fields.REDREICT_ID;
+					value 		= responseData[this.props.nodeid][i].fields.VALUE;
+					src 		= responseData[this.props.nodeid][i].fields.IMAGES.image.src;
+				}
+				catch (e)
+				{
+				
+				}
 				
 				this.state.menuData[i] 			= {};
 				this.state.menuData[i].title 	= name;

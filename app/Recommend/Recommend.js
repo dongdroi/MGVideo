@@ -121,14 +121,14 @@ module.exports 	= React.createClass (
 				var value 		= "";
 				try
 				{
-					name 		= responseData[this.props.nodeid][i].name;
-					nodeId 		= responseData[this.props.nodeid][i].fields.REDREICT_ID;
-					value 		= responseData[this.props.nodeid][i].fields.VALUE;
-					src 		= responseData[this.props.nodeid][i].fields.IMAGES.image.src;
+					name 		= responseData[NodeId][i].name;
+					nodeId 		= responseData[NodeId][i].fields.REDREICT_ID;
+					value 		= responseData[NodeId][i].fields.VALUE;
+					src 		= responseData[NodeId][i].fields.IMAGES.image.src;
 				}
 				catch (e)
 				{
-				
+					console.log('fetchDataSuccess e = ' + e);
 				}
 				
 				this.state.menuData[i] 			= {};
@@ -216,6 +216,7 @@ module.exports 	= React.createClass (
 			var child = new Array ();
 			for (var i in this.state.menuData)
 			{
+				try {
 				child.push(
 					<MenuListViewPageItem
 						key 		= {i}
@@ -229,7 +230,9 @@ module.exports 	= React.createClass (
 						navigator   = {this.props.navigator}>
 					</MenuListViewPageItem>
 				);
-			
+				} catch (e){
+					console.log('renderItem e = ' + e);
+				}
 			}
 			return (
 				<View style 	= {{height:commonTools.screenHeight - commonTools.actualWidth (50)}}>
@@ -258,6 +261,7 @@ module.exports 	= React.createClass (
 		},
 		render:function ()
 		{
+			console.log('finishFetchData = ' + this.state.finishFetchData);
 			if (this.isAndroid ())
 			{
 				if (this.state.finishFetchData)

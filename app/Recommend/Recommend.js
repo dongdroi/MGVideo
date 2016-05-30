@@ -261,7 +261,6 @@ module.exports 	= React.createClass (
 		},
 		render:function ()
 		{
-			console.log('finishFetchData = ' + this.state.finishFetchData);
 			if (this.isAndroid ())
 			{
 				if (this.state.finishFetchData)

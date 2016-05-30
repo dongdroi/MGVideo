@@ -147,8 +147,8 @@ class VideoPlayer extends Component {
     ToastShort(this.state.videoMarked ? '收藏成功' : '取消收藏');
   }
   
-  onShareButtonPress(title) {
-    Portal.showModal(tag, this.renderShareDialog(title));
+  onShareButtonPress() {
+    Portal.showModal(tag, this.renderShareDialog());
   }
   
   onVideoPrepared(event) {
@@ -180,14 +180,39 @@ class VideoPlayer extends Component {
 		});
   }
   
-  renderShareDialog(title) {
-    Share.open({
-        share_text: "咪咕视频",
-        share_URL: "http://google.cl",
-        title: "Share Link"
-    },(e) => {
-      console.log(e);
-    });
+  renderShareDialog() {
+    return (
+        <View key={'spinner'} style={styles.spinner}>
+        <View style={styles.spinnerContent}>
+          <Text style={styles.spinnerTitle}>分享到</Text>
+          <View style={{height: 0.5, marginTop: 12, backgroundColor:'#ff8f00'}}/>
+          <View style={{flexDirection: 'row', marginTop: 12}}>
+            <TouchableOpacity style={{flex: 1}} onPress={this.onShareSelected.bind(this, 0)}>
+                <View style={styles.shareContent} >
+                  <Image style={styles.shareIcon} source={require('../img/ic_share_weixin.png')}/>
+                  <Text style={styles.shareTitle}>微信</Text>
+                </View>
+            </TouchableOpacity>
+            <TouchableOpacity style={{flex: 1}} onPress={this.onShareSelected.bind(this, 1)}>
+               <View style={styles.shareContent}>
+                  <Image style={styles.shareIcon} source={require('../img/ic_share_pengyou.png')}/>
+                  <Text style={styles.shareTitle}>朋友圈</Text>
+               </View>
+            </TouchableOpacity>
+            <TouchableOpacity style={{flex: 1}} onPress={this.onShareSelected.bind(this, 2)}>
+               <View style={styles.shareContent} >
+                  <Image style={styles.shareIcon} source={require('../img/ic_share_weibo.png')}/>
+                  <Text style={styles.shareTitle}>微博</Text>
+               </View>
+            </TouchableOpacity>
+          </View>
+          <View style={{height: 0.5, marginTop: 12, backgroundColor:'#ff8f00'}}/>
+          <TouchableOpacity style={{marginTop: 12}} onPress={this.goBack.bind(this)}>
+            <Text style={[styles.spinnerTitle, {fontSize: 16}]}>取消</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+     );
   }
   
   renderItem(item) {
@@ -337,7 +362,7 @@ class VideoPlayer extends Component {
 				 
             <VideoMenuLayout style={styles.shareMenu} videoMarked={this.state.videoMarked} times={'1000万次'}
                 onMarkButtonPress={this.onMarkButtonPress}
-                onShareButtonPress={this.onShareButtonPress.bind(this, videoName)} />
+                onShareButtonPress={this.onShareButtonPress.bind(this)} />
               {
                serialLists.length == 1 ? serialLists :      //直播只支持局部滑动
                   (<ScrollView automaticallyAdjustContentInsets={false} horizontal={false}

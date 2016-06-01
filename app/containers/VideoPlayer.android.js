@@ -53,23 +53,23 @@ var programId;
 var timer;
 var videoDetail = new Object();
 
-Date.prototype.format = function(fmt) { 
-  var o = {   
-    "M+" : this.getMonth()+1,                 //月份   
-    "d+" : this.getDate(),                    //日   
-    "h+" : this.getHours(),                   //小时   
-    "m+" : this.getMinutes(),                 //分   
-    "s+" : this.getSeconds(),                 //秒   
-    "q+" : Math.floor((this.getMonth()+3)/3), //季度   
-    "S"  : this.getMilliseconds()             //毫秒   
-  };   
-  if(/(y+)/.test(fmt))   
-    fmt=fmt.replace(RegExp.$1, (this.getFullYear()+"").substr(4 - RegExp.$1.length));   
-  for(var k in o)   
-    if(new RegExp("("+ k +")").test(fmt))   
-  fmt = fmt.replace(RegExp.$1, (RegExp.$1.length==1) ? (o[k]) : (("00"+ o[k]).substr((""+ o[k]).length)));   
-  return fmt;   
-}  
+Date.prototype.format = function(fmt) {
+  var o = {
+    "M+" : this.getMonth()+1,                 //月份
+    "d+" : this.getDate(),                    //日
+    "h+" : this.getHours(),                   //小时
+    "m+" : this.getMinutes(),                 //分
+    "s+" : this.getSeconds(),                 //秒
+    "q+" : Math.floor((this.getMonth()+3)/3), //季度
+    "S"  : this.getMilliseconds()             //毫秒
+  };
+  if(/(y+)/.test(fmt))
+    fmt=fmt.replace(RegExp.$1, (this.getFullYear()+"").substr(4 - RegExp.$1.length));
+  for(var k in o)
+    if(new RegExp("("+ k +")").test(fmt))
+  fmt = fmt.replace(RegExp.$1, (RegExp.$1.length==1) ? (o[k]) : (("00"+ o[k]).substr((""+ o[k]).length)));
+  return fmt;
+}
 var today = new Date().format('yyyyMMdd');
 
 class VideoPlayer extends Component {
@@ -99,35 +99,35 @@ class VideoPlayer extends Component {
       tag = Portal.allocateTag();
     }
   }
-    
+
   componentDidMount() {
     BackAndroid.addEventListener('hardwareBackPress', this.goBack);
-    
+
     const {dispatch} = this.props;
-    
+
     InteractionManager.runAfterInteractions(() => {
         dispatch(fetchDetail(programId));
-    }); 
-    
+    });
+
     setTimeout(() => {
         this.setState({animPlaying: false})
-    }, 1000); 
+    }, 1000);
   }
 
   componentWillUnmount() {
     //console.log('componentWillUnmount ' + timer);
     //if (timer != undefined) {       //清除定时器
     //    TimerMixin.clearTimeout(timer);
-    //} 
+    //}
     const {dispatch} = this.props;
-    
+
     InteractionManager.runAfterInteractions(() => {
         dispatch(clearDetail(programId));
-    }); 
-     
+    });
+
     BackAndroid.removeEventListener('hardwareBackPress', this.goBack);
   }
-  
+
   goBack() {
     if (Portal.getOpenModals().length != 0) {
       Portal.closeModal(tag);
@@ -137,45 +137,98 @@ class VideoPlayer extends Component {
     }
     return NaviGoBack(this.props.navigator);
   }
-  
+
   onMarkButtonPress() {
     this.setState({videoMarked: !this.state.videoMarked});
     ToastShort(this.state.videoMarked ? '收藏成功' : '取消收藏');
   }
-  
-  onShareButtonPress(title) {
-    Portal.showModal(tag, this.renderShareDialog(title));
+
+  onShareButtonPress() {
+    Portal.showModal(tag, this.renderShareDialog());
   }
-  
+
+  onShareSelected(scene) {
+    const {detail} = this.props;
+    var fields;
+    if (detail.nodeContent.fields != undefined) {
+      fields = detail.nodeContent.fields;
+    } else if (detail.nodeDetail.fields != undefined) {
+      fields = detail.nodeDetail.fields;
+    }
+    if (fields == undefined) return;
+    const url = 'http://m.cmvideo.cn/wap/resource/mh/share/migushare.jsp?cid='+programId;
+    NativeModules.MGShareSdkModule.share(scene,
+        { type: 'webpage',
+          title: fields.Name,
+          description: fields.Detail,
+          webpageUrl: url,
+        },
+        (result)=>{
+          console.log('onShareSelected result = ' + result);
+        }
+    );
+  }
+
   onVideoSelected(programId) {
     const {dispatch, detail} = this.props;
     InteractionManager.runAfterInteractions(() => {
         dispatch(fetchDetail(programId));
-    }); 
+    });
   }
-  
+
   onBillItemClicked(start, end) {
 		const {dispatch, detail} = this.props;
     var contentId = detail.nodeDetail.fields.MMS_ID;
 		var visitPath = detail.nodeDetail.fields.mediafiles.mediafile[1].visitPath;
-		
+
 		var startTime = start.format('yyyyMMddhhmmss');
 		var endTime = end.format('yyyyMMddhhmmss');
 		InteractionManager.runAfterInteractions(() => {
 			  dispatch(fetchVideoPath(visitPath, contentId, startTime, endTime));
 		});
   }
-  
-  renderShareDialog(title) {
-     NativeModules.MGShareSdk.share(0);
+
+  renderShareDialog() {
+     return (
+        <View key={'spinner'} style={styles.spinner}>
+        <View style={styles.spinnerContent}>
+          <Text style={styles.spinnerTitle}>分享到</Text>
+          <View style={{height: 0.5, marginTop: 12, backgroundColor:'#ff8f00'}}/>
+          <View style={{flexDirection: 'row', marginTop: 12}}>
+            <TouchableOpacity style={{flex: 1}} onPress={this.onShareSelected.bind(this, 0)}>
+                <View style={styles.shareContent} >
+                  <Image style={styles.shareIcon} source={require('../img/ic_share_weixin.png')}/>
+                  <Text style={styles.shareTitle}>微信</Text>
+                </View>
+            </TouchableOpacity>
+            <TouchableOpacity style={{flex: 1}} onPress={this.onShareSelected.bind(this, 1)}>
+               <View style={styles.shareContent}>
+                  <Image style={styles.shareIcon} source={require('../img/ic_share_pengyou.png')}/>
+                  <Text style={styles.shareTitle}>朋友圈</Text>
+               </View>
+            </TouchableOpacity>
+            <TouchableOpacity style={{flex: 1}} onPress={this.onShareSelected.bind(this, 2)}>
+               <View style={styles.shareContent} >
+                  <Image style={styles.shareIcon} source={require('../img/ic_share_weibo.png')}/>
+                  <Text style={styles.shareTitle}>微博</Text>
+               </View>
+            </TouchableOpacity>
+          </View>
+          <View style={{height: 0.5, marginTop: 12, backgroundColor:'#ff8f00'}}/>
+          <TouchableOpacity style={{marginTop: 12}} onPress={this.goBack.bind(this)}>
+            <Text style={[styles.spinnerTitle, {fontSize: 16}]}>取消</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+     );
   }
-  
+
   renderItem(item) {
     return (
       <TouchableOpacity>
         <View style={styles.listItem}>
           <View style={styles.userImage}>
-            <Image style={{width:24, height: 24, resizeMode: Image.resizeMode.contain}} 
+            <Image style={{width:24, height: 24, resizeMode: Image.resizeMode.contain}}
               source={require('../img/logo.png')} />
           </View>
           <View style={styles.commentInfo}>
@@ -188,13 +241,13 @@ class VideoPlayer extends Component {
       </TouchableOpacity>
     );
   }
-  
+
   render() {
     //const {route} = this.props;
     const {navigator, detail} = this.props;
     const nodeDetail = detail.nodeDetail;
     const nodeContent = detail.nodeContent;
-    
+
     var fields;
     var isNodeContent = false;
     if (nodeContent.fields != undefined) {
@@ -203,12 +256,12 @@ class VideoPlayer extends Component {
     } else if (nodeDetail.fields != undefined) {
       fields = nodeDetail.fields;
     }
-    
+
     var videoName = '正在加载...';
     //var videoPath;
-    console.log("VideoPlayer nodeDetail detail = " + nodeDetail.fields 
+    console.log("VideoPlayer nodeDetail detail = " + nodeDetail.fields
         + ",content = " + nodeContent.fields + ',videoPath = ' + detail.videoPath);
-        
+
     if (fields == undefined) {
       return <LoadingView/>;
     } else {
@@ -234,7 +287,7 @@ class VideoPlayer extends Component {
       }
       videoName = fields.Name;
     }
-    
+
     var serialLists = [];
     if (fields.DISPLAYTYPE == '500020') {
        if (detail.playBill.Playbill != undefined) {
@@ -253,39 +306,39 @@ class VideoPlayer extends Component {
         );
         if (fields.DISPLAYTYPE == '1001' || fields.DISPLAYTYPE == '1007') {
           serialLists.push(
-            <SerialGridLayout key={2} style={styles.serialGrid} serialGap={serialGap} 
+            <SerialGridLayout key={2} style={styles.serialGrid} serialGap={serialGap}
                 serialWidth={serialWidth} serialHeight={serialHeight} serialIds={serialIds}
                 programId={programId} onVideoSelected={this.onVideoSelected}/>
           );
         } else if (fields.DISPLAYTYPE == '1005' || fields.DISPLAYTYPE == '1004') { //综艺选集，咪咕新闻汇
             if (detail.nodeRelated.length == 3) {
                 serialLists.push(
-                  <RelatedListLayout key={3} style={styles.serialGrid} programId={programId} 
+                  <RelatedListLayout key={3} style={styles.serialGrid} programId={programId}
                       nodeRelated={detail.nodeRelated} onVideoSelected={this.onVideoSelected}/>
                 );
             }
         }
     }
-    
+
     return (
          <View style={styles.container}>
             <View style={{height: VideoHeight, backgroundColor:'black'}}>
               <View key={0} style={styles.content}>
-                {this.state.animPlaying ? (null) : 
-                  <MGVideo style={styles.content} 
-                      videoPath={detail.videoPath} 
+                {this.state.animPlaying ? (null) :
+                  <MGVideo style={styles.content}
+                      videoPath={detail.videoPath}
                       stopped={this.state.needStopPlay}/>
                 }
               </View>
               <TouchableOpacity style={styles.gotoback} onPress={this.goBack}>
-                 <Image style={{width: 24, height: 24}} 
+                 <Image style={{width: 24, height: 24}}
                   source={require('../img/ic_video_back.png')}></Image>
                  <Text style={{fontSize:14, color:'white', textAlign:'left'}}>{videoName}</Text>
               </TouchableOpacity>
             </View>
             <VideoMenuLayout style={styles.shareMenu} videoMarked={this.state.videoMarked} times={'1000万次'}
                 onMarkButtonPress={this.onMarkButtonPress}
-                onShareButtonPress={this.onShareButtonPress.bind(this, videoName)} />
+                onShareButtonPress={this.onShareButtonPress.bind(this)} />
               {
                serialLists.length == 1 ? serialLists :      //直播只支持局部滑动
                   (<ScrollView automaticallyAdjustContentInsets={false} horizontal={false}
@@ -305,11 +358,11 @@ const styles = StyleSheet.create({
     backgroundColor: 'white'
   },
   content: {
-    position: 'absolute', 
-    top: 0, 
-    bottom: 0, 
-    left: 0, 
-    right: 0, 
+    position: 'absolute',
+    top: 0,
+    bottom: 0,
+    left: 0,
+    right: 0,
     backgroundColor: 'black'
   },
   shareMenu: {
@@ -321,10 +374,10 @@ const styles = StyleSheet.create({
   },
   gotoback: {
     flexDirection: 'row',
-    alignItems: 'center', 
+    alignItems: 'center',
     position: 'absolute',
-    top: 0, 
-    left: 0, 
+    top: 0,
+    left: 0,
     height: 36,
     paddingLeft: defaultPadding,
   },
@@ -336,9 +389,9 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
   },
   serialGrid: {
-    flexDirection:'column', 
-    marginTop: 8, 
-    paddingLeft: defaultPadding, 
+    flexDirection:'column',
+    marginTop: 8,
+    paddingLeft: defaultPadding,
     paddingRight: defaultPadding
   },
   spinner: {
@@ -349,16 +402,15 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.65)'
   },
   spinnerContent: {
+    flexDirection: 'column',
     justifyContent: 'center',
-    width: VideoWidth * (7 / 10),
-    height: VideoWidth * (7 / 10) * 0.68,
+    width: 300,
+    height: 200,
     backgroundColor: '#fcfcfc',
-    padding: 20,
-    borderRadius: 5
   },
   spinnerTitle: {
     fontSize: 18,
-    color: '#313131',
+    color: '#ff8f00',
     textAlign: 'center'
   },
   shareContent: {
@@ -368,8 +420,14 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   shareIcon: {
-    width: 40,
-    height: 40
+    width: 48,
+    height: 48
+  },
+  shareTitle: {
+    fontSize: 14,
+    color: 'black',
+    textAlign: 'center',
+    marginTop: 4,
   },
   listView: {
     marginTop: 12,

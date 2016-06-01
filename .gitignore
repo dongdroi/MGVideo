@@ -39,11 +39,11 @@ node_modules/react-native
 node_modules/react-native-invertible-scroll-view
 node_modules/react-native-page-swiper
 node_modules/react-native-responsive-image
-node_modules/react-native-wechat
 node_modules/react-redux
 node_modules/react-timer-mixin
 node_modules/redux
 node_modules/redux-thunk
 npm-debug.log
+node_modules/react-native-mgvideo/ios/MGVideoRCT/MGMediaFramework.framework
 
 iOS/MGMediaFramework.framework

@@ -12,6 +12,7 @@ import React, {
   ScrollView,
   TouchableOpacity,
   InteractionManager,
+  DeviceEventEmitter,
 } from 'react-native';
 
 import header, {
@@ -30,7 +31,10 @@ import LoadingView from '../components/LoadingView';
 import {fetchDetail, fetchVideoPath, clearDetail} from '../actions/detail';
 import ReadingToolbar from '../components/ReadingToolbar';
 
-var MGPlayer = require('./MGPlayer');
+
+
+import MGPlayer from 'react-native-mgvideo';
+// var MGPlayer = require('./MGPlayer');
 var MGPlayerRCTManager = React.NativeModules.MGPlayerRCTManager;
 
 
@@ -80,6 +84,12 @@ Date.prototype.format = function(fmt) {
 }  
 var today = new Date().format('yyyyMMdd');
 
+
+
+
+var mDeviceEventEmitter;
+var myfullscreen = false;
+
 class VideoPlayer extends Component {
   constructor(props) {
     super(props);
@@ -120,7 +130,16 @@ class VideoPlayer extends Component {
     
     setTimeout(() => {
         this.setState({animPlaying: false})
-    }, 1000); 
+    }, 500); 
+	
+	
+	if (!mDeviceEventEmitter)
+	{
+		mDeviceEventEmitter = DeviceEventEmitter.addListener(
+						'fullScreenCallback',
+						(response) => {this.changeToFullScreen(response);}
+					      );
+	}
 	
   }
 
@@ -135,9 +154,34 @@ class VideoPlayer extends Component {
         dispatch(clearDetail(programId));
     }); 
 	
+	if (mDeviceEventEmitter)
+	{
+		mDeviceEventEmitter.remove();
+	}
   }
   
+changeToFullScreen(response)
+{
+	if (response.state == "PORTRAIT")
+	{
+		myfullscreen = false;
+		this.forceUpdate ();
+	}
+	else if (response.state == "LANDSCAPE")
+	{
+		myfullscreen = true;
+		this.forceUpdate ();
+	}
+}
   goBack() {
+	  
+  	if (mDeviceEventEmitter)
+  	{
+  		mDeviceEventEmitter.remove();
+  	}
+	mDeviceEventEmitter = null;
+	
+	
 	MGPlayerRCTManager.stop ();
     return NaviGoBack(this.props.navigator);
   }
@@ -147,8 +191,8 @@ class VideoPlayer extends Component {
     ToastShort(this.state.videoMarked ? '收藏成功' : '取消收藏');
   }
   
-  onShareButtonPress(title) {
-    Portal.showModal(tag, this.renderShareDialog(title));
+  onShareButtonPress() {
+    Portal.showModal(tag, this.renderShareDialog());
   }
   
   onVideoPrepared(event) {
@@ -180,14 +224,39 @@ class VideoPlayer extends Component {
 		});
   }
   
-  renderShareDialog(title) {
-    Share.open({
-        share_text: "咪咕视频",
-        share_URL: "http://google.cl",
-        title: "Share Link"
-    },(e) => {
-      console.log(e);
-    });
+  renderShareDialog() {
+    return (
+        <View key={'spinner'} style={styles.spinner}>
+        <View style={styles.spinnerContent}>
+          <Text style={styles.spinnerTitle}>分享到</Text>
+          <View style={{height: 0.5, marginTop: 12, backgroundColor:'#ff8f00'}}/>
+          <View style={{flexDirection: 'row', marginTop: 12}}>
+            <TouchableOpacity style={{flex: 1}} onPress={this.onShareSelected.bind(this, 0)}>
+                <View style={styles.shareContent} >
+                  <Image style={styles.shareIcon} source={require('../img/ic_share_weixin.png')}/>
+                  <Text style={styles.shareTitle}>微信</Text>
+                </View>
+            </TouchableOpacity>
+            <TouchableOpacity style={{flex: 1}} onPress={this.onShareSelected.bind(this, 1)}>
+               <View style={styles.shareContent}>
+                  <Image style={styles.shareIcon} source={require('../img/ic_share_pengyou.png')}/>
+                  <Text style={styles.shareTitle}>朋友圈</Text>
+               </View>
+            </TouchableOpacity>
+            <TouchableOpacity style={{flex: 1}} onPress={this.onShareSelected.bind(this, 2)}>
+               <View style={styles.shareContent} >
+                  <Image style={styles.shareIcon} source={require('../img/ic_share_weibo.png')}/>
+                  <Text style={styles.shareTitle}>微博</Text>
+               </View>
+            </TouchableOpacity>
+          </View>
+          <View style={{height: 0.5, marginTop: 12, backgroundColor:'#ff8f00'}}/>
+          <TouchableOpacity style={{marginTop: 12}} onPress={this.goBack.bind(this)}>
+            <Text style={[styles.spinnerTitle, {fontSize: 16}]}>取消</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+     );
   }
   
   renderItem(item) {
@@ -267,10 +336,6 @@ class VideoPlayer extends Component {
     var lists = [];
     if (!this.state.animPlaying && detail.videoPath != '') 
 	{
-		MGPlayerRCTManager.setUri(detail.videoPath);
-		MGPlayerRCTManager.setScreen (VideoWidth, VideoHeight);
-		MGPlayerRCTManager.setCallBack (this.myCallBack);
-		
         lists.push(
           <View 
 				key 	= {0} 
@@ -321,11 +386,20 @@ class VideoPlayer extends Component {
         }
     }
 	
+	// myfullscreen = true;
+	
+	var mywidth 	= Dimensions.get('window').width;
+	var myheight 	= myfullscreen?(Dimensions.get('window').height):(Dimensions.get('window').width*9/16);
     return (
-         <View style={styles.container}>
-			<View style={{marginTop:commonTools.myActualHeight(40)}}></View>
+        <View style={styles.container}>
+		{
+			myfullscreen ? 
+			(null):
+			(<View style={{marginTop:commonTools.myActualHeight(40)}}></View>)
+		}
+			
 		
-            <View style={{height: VideoHeight, backgroundColor:'black'}}>
+			<View style={{width: mywidth, height: myheight, backgroundColor:'black'}}>
               {lists}
               
 			  <TouchableOpacity style={styles.gotoback} onPress={this.goBack}>
@@ -334,18 +408,28 @@ class VideoPlayer extends Component {
                  <Text style={{fontSize:14, color:'white', textAlign:'left'}}>{videoName}</Text>
               </TouchableOpacity>
             </View>
-				 
-            <VideoMenuLayout style={styles.shareMenu} videoMarked={this.state.videoMarked} times={'1000万次'}
-                onMarkButtonPress={this.onMarkButtonPress}
-                onShareButtonPress={this.onShareButtonPress.bind(this, videoName)} />
-              {
-               serialLists.length == 1 ? serialLists :      //直播只支持局部滑动
-                  (<ScrollView automaticallyAdjustContentInsets={false} horizontal={false}
-                      showsVerticalScrollIndicator={false}>
-                   {serialLists}
-                   </ScrollView>)
-              }
-          </View>
+		{
+			myfullscreen ? 
+			(null):
+			(
+	            <VideoMenuLayout style={styles.shareMenu} videoMarked={this.state.videoMarked} times={'1000万次'}
+	                onMarkButtonPress={this.onMarkButtonPress}
+	                onShareButtonPress={this.onShareButtonPress.bind(this)} />
+			)
+		}
+        {
+			myfullscreen?
+			(null):
+			(
+	         serialLists.length == 1 ? serialLists :      //直播只支持局部滑动
+	            (<ScrollView automaticallyAdjustContentInsets={false} horizontal={false}
+	                showsVerticalScrollIndicator={false}>
+	             {serialLists}
+	             </ScrollView>)
+			)
+         
+        }
+		</View>
     );
   }
 }

@@ -130,7 +130,7 @@ class VideoPlayer extends Component {
     
     setTimeout(() => {
         this.setState({animPlaying: false})
-    }, 500); 
+    }, 1000); 
 	
 	
 	if (!mDeviceEventEmitter)

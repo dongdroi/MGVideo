@@ -9,7 +9,6 @@ import React, {
   Image,
   View,
   ListView,
-  PixelRatio,
   ScrollView,
   TouchableOpacity,
   InteractionManager,
@@ -35,9 +34,11 @@ import ScrollableTabView from 'react-native-scrollable-tab-view';
 
 import Share from 'react-native-share';
 
+var PixelRatio = require('PixelRatio');
 var Dimensions = require('Dimensions');
 //var TimerMixin = require('react-timer-mixin');
 
+const PX_UNIT = 1 / PixelRatio.get();
 const defaultPadding = 10;
 const VideoWidth = Dimensions.get('window').width;
 const VideoHeight = VideoWidth * 9 / 16;
@@ -85,6 +86,7 @@ class VideoPlayer extends Component {
       videoMarked: false,                             //视频是否收藏
       needStopPlay: false,                            //退出播放界面
       animPlaying: true,                              //进入播放界面的动画
+      isFullScreen: false,                            //是否全屏
     };
     this.renderItem = this.renderItem.bind(this);
     this.goBack = this.goBack.bind(this);
@@ -92,6 +94,7 @@ class VideoPlayer extends Component {
     this.onShareButtonPress = this.onShareButtonPress.bind(this);
     this.onVideoSelected = this.onVideoSelected.bind(this);
     this.onBillItemClicked = this.onBillItemClicked.bind(this);
+    this.orientationChanged = this.orientationChanged.bind(this);
   }
 
   componentWillMount() {
@@ -133,7 +136,13 @@ class VideoPlayer extends Component {
       Portal.closeModal(tag);
       return true;
     } else {
-      this.setState({needStopPlay: true});
+      //if (this.state.isFullScreen) {
+          //[SCREEN_ORIENTATION_LANDSCAPE = 0, SCREEN_ORIENTATION_PORTRAIT = 1;]
+      //    NativeModules.OrientationModule.setRequestedOrientation(1);
+      //    return true;
+      //} else {
+        this.setState({needStopPlay: true});
+      //}
     }
     return NaviGoBack(this.props.navigator);
   }
@@ -187,13 +196,19 @@ class VideoPlayer extends Component {
 			  dispatch(fetchVideoPath(visitPath, contentId, startTime, endTime));
 		});
   }
+  
+  orientationChanged(event) {
+    var isFullScreen = (event.nativeEvent.orientation != 1);
+    console.log('orientationChanged isFullScreen = ' + isFullScreen);
+    this.setState({isFullScreen: isFullScreen});
+  }
 
   renderShareDialog() {
      return (
         <View key={'spinner'} style={styles.spinner}>
         <View style={styles.spinnerContent}>
           <Text style={styles.spinnerTitle}>分享到</Text>
-          <View style={{height: 0.5, marginTop: 12, backgroundColor:'#ff8f00'}}/>
+          <View style={{height: PX_UNIT, marginTop: 12, backgroundColor:'#ff8f00'}}/>
           <View style={{flexDirection: 'row', marginTop: 12}}>
             <TouchableOpacity style={{flex: 1}} onPress={this.onShareSelected.bind(this, 0)}>
                 <View style={styles.shareContent} >
@@ -214,7 +229,7 @@ class VideoPlayer extends Component {
                </View>
             </TouchableOpacity>
           </View>
-          <View style={{height: 0.5, marginTop: 12, backgroundColor:'#ff8f00'}}/>
+          <View style={{height: PX_UNIT, marginTop: 12, backgroundColor:'#ff8f00'}}/>
           <TouchableOpacity style={{marginTop: 12}} onPress={this.goBack.bind(this)}>
             <Text style={[styles.spinnerTitle, {fontSize: 16}]}>取消</Text>
           </TouchableOpacity>
@@ -266,6 +281,16 @@ class VideoPlayer extends Component {
       return <LoadingView/>;
     } else {
       programId = isNodeContent ? nodeContent._id : nodeDetail._id;
+      
+      if (this.state.isFullScreen) {
+         return (
+           <View style={styles.container}>
+              <MGVideo style={styles.content} videoPath={detail.videoPath}
+                  stopped={this.state.needStopPlay} orientationChanged={this.orientationChanged}/>
+           </View>
+         );
+      }
+      
       var mainActor = '';
       const propertyList = fields.propertyFileLists.propertyFile;
       if (propertyList != undefined && propertyList.length > 0) {            //数据结构不统一
@@ -324,27 +349,26 @@ class VideoPlayer extends Component {
          <View style={styles.container}>
             <View style={{height: VideoHeight, backgroundColor:'black'}}>
               <View key={0} style={styles.content}>
-                {this.state.animPlaying ? (null) :
-                  <MGVideo style={styles.content}
-                      videoPath={detail.videoPath}
-                      stopped={this.state.needStopPlay}/>
+                {
+                  this.state.animPlaying ? null :
+                    <MGVideo style={styles.content} videoPath={detail.videoPath}
+                        stopped={this.state.needStopPlay} orientationChanged={this.orientationChanged}/>
                 }
               </View>
-              <TouchableOpacity style={styles.gotoback} onPress={this.goBack}>
-                 <Image style={{width: 24, height: 24}}
-                  source={require('../img/ic_video_back.png')}></Image>
-                 <Text style={{fontSize:14, color:'white', textAlign:'left'}}>{videoName}</Text>
-              </TouchableOpacity>
             </View>
+            <TouchableOpacity style={styles.gotoback} onPress={this.goBack}>
+                <Image style={{width: 24, height: 24}}
+                source={require('../img/ic_video_back.png')}></Image>
+                <Text style={{fontSize:14, color:'white', textAlign:'left'}}>{videoName}</Text>
+            </TouchableOpacity>
             <VideoMenuLayout style={styles.shareMenu} videoMarked={this.state.videoMarked} times={'1000万次'}
-                onMarkButtonPress={this.onMarkButtonPress}
-                onShareButtonPress={this.onShareButtonPress.bind(this)} />
+                onMarkButtonPress={this.onMarkButtonPress} onShareButtonPress={this.onShareButtonPress.bind(this)} />
               {
                serialLists.length == 1 ? serialLists :      //直播只支持局部滑动
-                  (<ScrollView automaticallyAdjustContentInsets={false} horizontal={false}
+                  <ScrollView automaticallyAdjustContentInsets={false} horizontal={false}
                       showsVerticalScrollIndicator={false}>
                    {serialLists}
-                   </ScrollView>)
+                   </ScrollView>
               }
           </View>
     );

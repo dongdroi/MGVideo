@@ -408,6 +408,7 @@ changeToFullScreen(response)
                  <Text style={{fontSize:14, color:'white', textAlign:'left'}}>{videoName}</Text>
               </TouchableOpacity>
             </View>
+				 
 		{
 			myfullscreen ? 
 			(null):
@@ -430,6 +431,7 @@ changeToFullScreen(response)
          
         }
 		</View>
+		
     );
   }
 }

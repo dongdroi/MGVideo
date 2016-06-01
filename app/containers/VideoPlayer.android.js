@@ -13,6 +13,7 @@ import React, {
   TouchableOpacity,
   InteractionManager,
   NativeModules,
+  DeviceEventEmitter,
 } from 'react-native';
 
 import PlayBillLayout from '../layouts/PlayBillLayout';
@@ -73,6 +74,9 @@ Date.prototype.format = function(fmt) {
 }
 var today = new Date().format('yyyyMMdd');
 
+var mDeviceEventEmitter;
+var myfullscreen;
+
 class VideoPlayer extends Component {
   constructor(props) {
     super(props);
@@ -86,7 +90,6 @@ class VideoPlayer extends Component {
       videoMarked: false,                             //视频是否收藏
       needStopPlay: false,                            //退出播放界面
       animPlaying: true,                              //进入播放界面的动画
-      isFullScreen: false,                            //是否全屏
     };
     this.renderItem = this.renderItem.bind(this);
     this.goBack = this.goBack.bind(this);
@@ -94,7 +97,6 @@ class VideoPlayer extends Component {
     this.onShareButtonPress = this.onShareButtonPress.bind(this);
     this.onVideoSelected = this.onVideoSelected.bind(this);
     this.onBillItemClicked = this.onBillItemClicked.bind(this);
-    this.orientationChanged = this.orientationChanged.bind(this);
   }
 
   componentWillMount() {
@@ -113,12 +115,26 @@ class VideoPlayer extends Component {
     });
 
     setTimeout(() => {
-        this.setState({animPlaying: false})
+        this.setState(
+          {
+            animPlaying: false
+          }
+        );
     }, 1000);
+    
+    if (!mDeviceEventEmitter)
+    {
+      mDeviceEventEmitter = DeviceEventEmitter.addListener(
+              'fullScreenCallback',
+              (response) => {
+                this.changeToFullScreen(response);
+              }
+      );
+    }
   }
 
   componentWillUnmount() {
-    //console.log('componentWillUnmount ' + timer);
+    //console.log('componentWillUnmount');
     //if (timer != undefined) {       //清除定时器
     //    TimerMixin.clearTimeout(timer);
     //}
@@ -129,20 +145,34 @@ class VideoPlayer extends Component {
     });
 
     BackAndroid.removeEventListener('hardwareBackPress', this.goBack);
+    
+    if (mDeviceEventEmitter)
+    {
+      mDeviceEventEmitter.remove();
+    }
+  }
+
+  changeToFullScreen(response) {
+    console.log('changeToFullScreen ' + response.orientation);
+    myfullscreen = response.orientation != 1;
+    this.forceUpdate ();
   }
 
   goBack() {
-    if (Portal.getOpenModals().length != 0) {
-      Portal.closeModal(tag);
-      return true;
-    } else {
-      //if (this.state.isFullScreen) {
-          //[SCREEN_ORIENTATION_LANDSCAPE = 0, SCREEN_ORIENTATION_PORTRAIT = 1;]
-      //    NativeModules.OrientationModule.setRequestedOrientation(1);
-      //    return true;
-      //} else {
+    if (Portal.getOpenModals().length != 0)
+    {
+        Portal.closeModal(tag);
+        return true;
+    } else
+    {
+      if (myfullscreen)
+      {
+        NativeModules.OrientationModule.setRequestedOrientation(1);
+        return true;
+      } else 
+      {
         this.setState({needStopPlay: true});
-      //}
+      }
     }
     return NaviGoBack(this.props.navigator);
   }
@@ -197,12 +227,6 @@ class VideoPlayer extends Component {
 		});
   }
   
-  orientationChanged(event) {
-    var isFullScreen = (event.nativeEvent.orientation != 1);
-    console.log('orientationChanged isFullScreen = ' + isFullScreen);
-    this.setState({isFullScreen: isFullScreen});
-  }
-
   renderShareDialog() {
      return (
         <View key={'spinner'} style={styles.spinner}>
@@ -274,23 +298,13 @@ class VideoPlayer extends Component {
 
     var videoName = '正在加载...';
     //var videoPath;
-    console.log("VideoPlayer nodeDetail detail = " + nodeDetail.fields
-        + ",content = " + nodeContent.fields + ',videoPath = ' + detail.videoPath);
+    console.log("VideoPlayer detail = " + nodeDetail.fields + ",content = " + nodeContent.fields 
+        + ',videoPath = ' + detail.videoPath + ',myfullscreen = ' + myfullscreen);
 
     if (fields == undefined) {
       return <LoadingView/>;
     } else {
       programId = isNodeContent ? nodeContent._id : nodeDetail._id;
-      
-      if (this.state.isFullScreen) {
-         return (
-           <View style={styles.container}>
-              <MGVideo style={styles.content} videoPath={detail.videoPath}
-                  stopped={this.state.needStopPlay} orientationChanged={this.orientationChanged}/>
-           </View>
-         );
-      }
-      
       var mainActor = '';
       const propertyList = fields.propertyFileLists.propertyFile;
       if (propertyList != undefined && propertyList.length > 0) {            //数据结构不统一
@@ -347,29 +361,33 @@ class VideoPlayer extends Component {
 
     return (
          <View style={styles.container}>
-            <View style={{height: VideoHeight, backgroundColor:'black'}}>
-              <View key={0} style={styles.content}>
+            <View style={myfullscreen ? styles.content : {width:VideoWidth, height:VideoHeight, 
+                  backgroundColor: 'black'}}>
                 {
                   this.state.animPlaying ? null :
-                    <MGVideo style={styles.content} videoPath={detail.videoPath}
-                        stopped={this.state.needStopPlay} orientationChanged={this.orientationChanged}/>
+                    <MGVideo videoPath={detail.videoPath} stopped={this.state.needStopPlay} 
+                      resizeMode={myfullscreen ? 1 : 0}/>
                 }
-              </View>
             </View>
             <TouchableOpacity style={styles.gotoback} onPress={this.goBack}>
                 <Image style={{width: 24, height: 24}}
                 source={require('../img/ic_video_back.png')}></Image>
                 <Text style={{fontSize:14, color:'white', textAlign:'left'}}>{videoName}</Text>
             </TouchableOpacity>
-            <VideoMenuLayout style={styles.shareMenu} videoMarked={this.state.videoMarked} times={'1000万次'}
-                onMarkButtonPress={this.onMarkButtonPress} onShareButtonPress={this.onShareButtonPress.bind(this)} />
-              {
-               serialLists.length == 1 ? serialLists :      //直播只支持局部滑动
-                  <ScrollView automaticallyAdjustContentInsets={false} horizontal={false}
-                      showsVerticalScrollIndicator={false}>
-                   {serialLists}
-                   </ScrollView>
-              }
+            {
+              myfullscreen ? null :
+                <VideoMenuLayout style={styles.shareMenu} videoMarked={this.state.videoMarked} times={'1000万次'}
+                  onMarkButtonPress={this.onMarkButtonPress} onShareButtonPress={this.onShareButtonPress.bind(this)} />
+            }
+            {
+              myfullscreen ? null :
+              (serialLists.length == 1 ? serialLists :      //直播只支持局部滑动
+                <ScrollView automaticallyAdjustContentInsets={false} horizontal={false}
+                    showsVerticalScrollIndicator={false}>
+                  {serialLists}
+                </ScrollView>
+              )
+            }
           </View>
     );
   }

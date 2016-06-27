@@ -13,6 +13,7 @@ import React, {
   TouchableOpacity,
   InteractionManager,
   DeviceEventEmitter,
+	NativeModules,
 } from 'react-native';
 
 import header, {
@@ -35,7 +36,7 @@ import ReadingToolbar from '../components/ReadingToolbar';
 
 import MGPlayer from 'react-native-mgvideo';
 // var MGPlayer = require('./MGPlayer');
-var MGPlayerRCTManager = React.NativeModules.MGPlayerRCTManager;
+var MGVideoRCTManager = NativeModules.MGVideoRCTManager;
 
 
 import {NaviGoBack} from '../utils/CommonUtils';
@@ -173,18 +174,17 @@ changeToFullScreen(response)
 		this.forceUpdate ();
 	}
 }
-  goBack() {
-	  
-  	if (mDeviceEventEmitter)
-  	{
-  		mDeviceEventEmitter.remove();
-  	}
+goBack() 
+{
+	if (mDeviceEventEmitter)
+	{
+		mDeviceEventEmitter.remove();
+	}
 	mDeviceEventEmitter = null;
 	
-	
-	MGPlayerRCTManager.stop ();
-    return NaviGoBack(this.props.navigator);
-  }
+	MGVideoRCTManager.stop ();
+	return NaviGoBack(this.props.navigator);
+}
   
   onMarkButtonPress() {
     this.setState({videoMarked: !this.state.videoMarked});

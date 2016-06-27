@@ -176,14 +176,23 @@ changeToFullScreen(response)
 }
 goBack() 
 {
-	if (mDeviceEventEmitter)
+	if (myfullscreen)
 	{
-		mDeviceEventEmitter.remove();
+		MGVideoRCTManager.backToV();
+		this.forceUpdate ();
 	}
-	mDeviceEventEmitter = null;
+	else
+	{
+		if (mDeviceEventEmitter)
+		{
+			mDeviceEventEmitter.remove();
+		}
+		mDeviceEventEmitter = null;
 	
-	MGVideoRCTManager.stop ();
-	return NaviGoBack(this.props.navigator);
+		MGVideoRCTManager.stop ();
+		return NaviGoBack(this.props.navigator);
+	}
+	
 }
   
   onMarkButtonPress() {

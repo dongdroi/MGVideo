@@ -9,11 +9,11 @@ import React, {
   Image,
   View,
   ListView,
-  PixelRatio,
   ScrollView,
   TouchableOpacity,
   InteractionManager,
   NativeModules,
+  DeviceEventEmitter,
 } from 'react-native';
 
 import PlayBillLayout from '../layouts/PlayBillLayout';
@@ -35,9 +35,11 @@ import ScrollableTabView from 'react-native-scrollable-tab-view';
 
 import Share from 'react-native-share';
 
+var PixelRatio = require('PixelRatio');
 var Dimensions = require('Dimensions');
 //var TimerMixin = require('react-timer-mixin');
 
+const PX_UNIT = 1 / PixelRatio.get();
 const defaultPadding = 10;
 const VideoWidth = Dimensions.get('window').width;
 const VideoHeight = VideoWidth * 9 / 16;
@@ -71,6 +73,9 @@ Date.prototype.format = function(fmt) {
   return fmt;
 }
 var today = new Date().format('yyyyMMdd');
+
+var mDeviceEventEmitter;
+var myfullscreen;
 
 class VideoPlayer extends Component {
   constructor(props) {
@@ -110,12 +115,26 @@ class VideoPlayer extends Component {
     });
 
     setTimeout(() => {
-        this.setState({animPlaying: false})
+        this.setState(
+          {
+            animPlaying: false
+          }
+        );
     }, 1000);
+    
+    if (!mDeviceEventEmitter)
+    {
+      mDeviceEventEmitter = DeviceEventEmitter.addListener(
+              'fullScreenCallback',
+              (response) => {
+                this.changeToFullScreen(response);
+              }
+      );
+    }
   }
 
   componentWillUnmount() {
-    //console.log('componentWillUnmount ' + timer);
+    //console.log('componentWillUnmount');
     //if (timer != undefined) {       //清除定时器
     //    TimerMixin.clearTimeout(timer);
     //}
@@ -126,14 +145,34 @@ class VideoPlayer extends Component {
     });
 
     BackAndroid.removeEventListener('hardwareBackPress', this.goBack);
+    
+    if (mDeviceEventEmitter)
+    {
+      mDeviceEventEmitter.remove();
+    }
+  }
+
+  changeToFullScreen(response) {
+    console.log('changeToFullScreen ' + response.orientation);
+    myfullscreen = response.orientation != 1;
+    this.forceUpdate ();
   }
 
   goBack() {
-    if (Portal.getOpenModals().length != 0) {
-      Portal.closeModal(tag);
-      return true;
-    } else {
-      this.setState({needStopPlay: true});
+    if (Portal.getOpenModals().length != 0)
+    {
+        Portal.closeModal(tag);
+        return true;
+    } else
+    {
+      if (myfullscreen)
+      {
+        NativeModules.OrientationModule.setRequestedOrientation(1);
+        return true;
+      } else 
+      {
+        this.setState({needStopPlay: true});
+      }
     }
     return NaviGoBack(this.props.navigator);
   }
@@ -187,13 +226,13 @@ class VideoPlayer extends Component {
 			  dispatch(fetchVideoPath(visitPath, contentId, startTime, endTime));
 		});
   }
-
+  
   renderShareDialog() {
      return (
         <View key={'spinner'} style={styles.spinner}>
         <View style={styles.spinnerContent}>
           <Text style={styles.spinnerTitle}>分享到</Text>
-          <View style={{height: 0.5, marginTop: 12, backgroundColor:'#ff8f00'}}/>
+          <View style={{height: PX_UNIT, marginTop: 12, backgroundColor:'#ff8f00'}}/>
           <View style={{flexDirection: 'row', marginTop: 12}}>
             <TouchableOpacity style={{flex: 1}} onPress={this.onShareSelected.bind(this, 0)}>
                 <View style={styles.shareContent} >
@@ -214,7 +253,7 @@ class VideoPlayer extends Component {
                </View>
             </TouchableOpacity>
           </View>
-          <View style={{height: 0.5, marginTop: 12, backgroundColor:'#ff8f00'}}/>
+          <View style={{height: PX_UNIT, marginTop: 12, backgroundColor:'#ff8f00'}}/>
           <TouchableOpacity style={{marginTop: 12}} onPress={this.goBack.bind(this)}>
             <Text style={[styles.spinnerTitle, {fontSize: 16}]}>取消</Text>
           </TouchableOpacity>
@@ -259,8 +298,8 @@ class VideoPlayer extends Component {
 
     var videoName = '正在加载...';
     //var videoPath;
-    console.log("VideoPlayer nodeDetail detail = " + nodeDetail.fields
-        + ",content = " + nodeContent.fields + ',videoPath = ' + detail.videoPath);
+    console.log("VideoPlayer detail = " + nodeDetail.fields + ",content = " + nodeContent.fields 
+        + ',videoPath = ' + detail.videoPath + ',myfullscreen = ' + myfullscreen);
 
     if (fields == undefined) {
       return <LoadingView/>;
@@ -322,30 +361,33 @@ class VideoPlayer extends Component {
 
     return (
          <View style={styles.container}>
-            <View style={{height: VideoHeight, backgroundColor:'black'}}>
-              <View key={0} style={styles.content}>
-                {this.state.animPlaying ? (null) :
-                  <MGVideo style={styles.content}
-                      videoPath={detail.videoPath}
-                      stopped={this.state.needStopPlay}/>
+            <View style={myfullscreen ? styles.content : {width:VideoWidth, height:VideoHeight, 
+                  backgroundColor: 'black'}}>
+                {
+                  this.state.animPlaying ? null :
+                    <MGVideo videoPath={detail.videoPath} stopped={this.state.needStopPlay} 
+                      resizeMode={myfullscreen ? 1 : 0}/>
                 }
-              </View>
-              <TouchableOpacity style={styles.gotoback} onPress={this.goBack}>
-                 <Image style={{width: 24, height: 24}}
-                  source={require('../img/ic_video_back.png')}></Image>
-                 <Text style={{fontSize:14, color:'white', textAlign:'left'}}>{videoName}</Text>
-              </TouchableOpacity>
             </View>
-            <VideoMenuLayout style={styles.shareMenu} videoMarked={this.state.videoMarked} times={'1000万次'}
-                onMarkButtonPress={this.onMarkButtonPress}
-                onShareButtonPress={this.onShareButtonPress.bind(this)} />
-              {
-               serialLists.length == 1 ? serialLists :      //直播只支持局部滑动
-                  (<ScrollView automaticallyAdjustContentInsets={false} horizontal={false}
-                      showsVerticalScrollIndicator={false}>
-                   {serialLists}
-                   </ScrollView>)
-              }
+            <TouchableOpacity style={styles.gotoback} onPress={this.goBack}>
+                <Image style={{width: 24, height: 24}}
+                source={require('../img/ic_video_back.png')}></Image>
+                <Text style={{fontSize:14, color:'white', textAlign:'left'}}>{videoName}</Text>
+            </TouchableOpacity>
+            {
+              myfullscreen ? null :
+                <VideoMenuLayout style={styles.shareMenu} videoMarked={this.state.videoMarked} times={'1000万次'}
+                  onMarkButtonPress={this.onMarkButtonPress} onShareButtonPress={this.onShareButtonPress.bind(this)} />
+            }
+            {
+              myfullscreen ? null :
+              (serialLists.length == 1 ? serialLists :      //直播只支持局部滑动
+                <ScrollView automaticallyAdjustContentInsets={false} horizontal={false}
+                    showsVerticalScrollIndicator={false}>
+                  {serialLists}
+                </ScrollView>
+              )
+            }
           </View>
     );
   }
